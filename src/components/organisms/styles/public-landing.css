@@ -1,0 +1,534 @@
+.public-landing-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 42px;
+  align-items: center;
+  min-height: 54vh;
+  padding: 34px 40px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+}
+
+.public-landing-hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.public-landing-hero-copy .text-section-title {
+  max-width: 14ch;
+  font-size: clamp(2.6rem, 4.5vw, 5rem);
+  line-height: 1.15;
+}
+
+.public-landing-hero-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.public-landing-hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.public-landing-hero-visual {
+  position: relative;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: public-landing-fade-up 900ms ease both;
+}
+
+.public-landing-hero-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(183, 195, 217, 0.08);
+}
+
+.public-landing-hero-orbit-a {
+  width: 420px;
+  height: 420px;
+  box-shadow: 0 0 42px rgba(34, 211, 238, 0.08);
+  animation: public-landing-spin 16s linear infinite;
+}
+
+.public-landing-hero-orbit-b {
+  width: 520px;
+  height: 520px;
+  border-style: dashed;
+  opacity: 0.5;
+  animation: public-landing-spin-reverse 24s linear infinite;
+}
+
+.public-landing-hero-cards {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+.public-landing-hero-card-primary {
+  position: relative;
+  z-index: 2;
+  transform: translateY(-8px) scale(1.06);
+  animation: public-landing-float 5.4s ease-in-out infinite;
+}
+
+.public-landing-hero-card-secondary {
+  transform: translate(24px, 34px) rotate(-8deg) scale(0.9);
+  opacity: 0.94;
+  animation: public-landing-float 6.2s ease-in-out infinite reverse;
+}
+
+.public-landing-hero-card-tertiary {
+  transform: translate(-24px, 26px) rotate(8deg) scale(0.9);
+  opacity: 0.9;
+  animation: public-landing-float 6.8s ease-in-out infinite;
+}
+
+.public-landing-hero-card-primary img,
+.public-landing-hero-card-secondary img,
+.public-landing-hero-card-tertiary img {
+  display: block;
+  width: clamp(170px, 17vw, 220px);
+  height: auto;
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.42));
+}
+
+.public-landing-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 22px;
+  border: 1px solid rgba(34, 197, 94, 0.24);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.16), rgba(16, 33, 64, 0.92));
+  animation: public-landing-glow 3.6s ease-in-out infinite;
+}
+
+.public-landing-banner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.public-landing-section {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 20px 0;
+}
+
+.public-landing-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 760px;
+}
+
+.public-landing-rarity-marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 1) 8%,
+    rgba(0, 0, 0, 1) 92%,
+    transparent
+  );
+}
+
+.public-landing-rarity-track {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  width: max-content;
+  will-change: transform;
+  animation: public-landing-marquee 28s linear infinite;
+}
+
+.public-landing-rarity-card,
+.public-landing-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.78), rgba(13, 27, 46, 0.96));
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.public-landing-rarity-card:hover,
+.public-landing-step:hover {
+  transform: translateY(-4px);
+  border-color: rgba(45, 140, 255, 0.42);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+.public-landing-rarity-card {
+  position: relative;
+  flex: 0 0 220px;
+  min-height: 0;
+  padding: 18px 18px 16px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.public-landing-rarity-card::before {
+  content: "";
+  position: absolute;
+  inset: -30% auto auto -10%;
+  width: 70%;
+  height: 140%;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0)
+  );
+  transform: rotate(18deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.public-landing-rarity-card:hover::before {
+  opacity: 1;
+  animation: public-landing-card-shine 1.2s ease;
+}
+
+.public-landing-rarity-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+}
+
+.public-landing-rarity-art img {
+  display: block;
+  width: 100%;
+  max-width: 170px;
+  height: auto;
+  object-fit: contain;
+  transform: translateY(4px);
+  transition: transform 220ms ease;
+}
+
+.public-landing-rarity-card:hover .public-landing-rarity-art img {
+  transform: translateY(0px) scale(1.02);
+}
+
+.public-landing-rarity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.public-landing-rarity-meta .text-caption {
+  color: rgba(224, 232, 245, 0.78);
+  line-height: 1.45;
+}
+
+.public-landing-rarity-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+.public-landing-rarity-card[data-family="bronze"] {
+  border-color: rgba(205, 127, 50, 0.26);
+  background:
+    radial-gradient(circle at top, rgba(205, 127, 50, 0.2), transparent 48%),
+    linear-gradient(180deg, rgba(38, 27, 16, 0.92), rgba(15, 18, 26, 0.98));
+}
+
+.public-landing-rarity-card[data-family="silver"] {
+  border-color: rgba(168, 169, 173, 0.28);
+  background:
+    radial-gradient(circle at top, rgba(197, 205, 221, 0.18), transparent 50%),
+    linear-gradient(180deg, rgba(28, 36, 49, 0.94), rgba(13, 20, 32, 0.98));
+}
+
+.public-landing-rarity-card[data-family="gold"] {
+  border-color: rgba(212, 160, 23, 0.3);
+  background:
+    radial-gradient(circle at top, rgba(212, 160, 23, 0.24), transparent 48%),
+    linear-gradient(180deg, rgba(39, 28, 7, 0.94), rgba(18, 16, 24, 0.98));
+}
+
+.public-landing-rarity-card[data-family="diamond"] {
+  border-color: rgba(88, 204, 255, 0.34);
+  background:
+    radial-gradient(circle at top, rgba(88, 204, 255, 0.24), transparent 48%),
+    linear-gradient(180deg, rgba(13, 35, 56, 0.94), rgba(11, 16, 30, 0.98));
+}
+
+.public-landing-rarity-card[data-finish="common"] {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(45, 55, 72, 0.6), rgba(30, 40, 55, 0.8));
+}
+
+.public-landing-rarity-card[data-finish="common"] .public-landing-rarity-badge {
+  background: rgba(150, 160, 180, 0.2);
+  color: rgba(180, 190, 210, 0.7);
+  font-size: 0.65rem;
+}
+
+.public-landing-rarity-card[data-finish="common"] .public-landing-rarity-art img {
+  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35));
+  opacity: 0.85;
+}
+
+.public-landing-rarity-card[data-finish="rare"] {
+  border-color: rgba(255, 215, 0, 0.6);
+  background:
+    linear-gradient(180deg, rgba(45, 40, 15, 0.7), rgba(30, 28, 20, 0.9));
+}
+
+.public-landing-rarity-card[data-finish="rare"] .public-landing-rarity-badge {
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.25), rgba(255, 170, 0, 0.15));
+  color: #ffd700;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.public-landing-rarity-card[data-finish="rare"] .public-landing-rarity-art img {
+  filter:
+    drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))
+    drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4));
+}
+
+.public-landing-rarity-card[data-finish="epic"] {
+  border-color: rgba(255, 215, 0, 0.85);
+  background:
+    linear-gradient(180deg, rgba(60, 50, 10, 0.85), rgba(40, 30, 10, 0.95));
+  box-shadow:
+    0 0 0 1px rgba(255, 214, 102, 0.4),
+    0 0 32px rgba(255, 215, 0, 0.3),
+    0 18px 40px rgba(0, 0, 0, 0.32),
+    0 0 56px rgba(255, 180, 0, 0.25);
+  animation: public-landing-epic-glow 2.5s ease-in-out infinite;
+}
+
+.public-landing-rarity-card[data-finish="epic"] .public-landing-rarity-badge {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(255, 150, 0, 0.25));
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+}
+
+.public-landing-rarity-card[data-finish="epic"] .public-landing-rarity-art::after {
+  content: "";
+  position: absolute;
+  inset: 12% 14%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 222, 133, 0.18), transparent 68%);
+  filter: blur(16px);
+  animation: public-landing-epic-pulse 2.6s ease-in-out infinite;
+  z-index: -1;
+}
+
+.public-landing-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.public-landing-how-shell {
+  grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
+  align-items: start;
+}
+
+.public-landing-step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(30, 111, 217, 0.2);
+  color: var(--accent-blue-light);
+  font-family: var(--font-number);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.public-landing-carousel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.public-landing-featured-shell {
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+}
+
+.public-landing-feature-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 180ms ease;
+}
+
+.public-landing-feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.public-landing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 24px 20px 8px;
+  border-top: 1px solid rgba(30, 58, 95, 0.84);
+  color: var(--text-muted);
+}
+
+.public-landing-footer-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.public-landing-footer-links a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.public-landing-footer-links a:hover {
+  color: var(--text-secondary);
+}
+
+@keyframes public-landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 10px));
+  }
+}
+
+@keyframes public-landing-card-shine {
+  from {
+    transform: translateX(-24%) rotate(18deg);
+  }
+
+  to {
+    transform: translateX(150%) rotate(18deg);
+  }
+}
+
+@keyframes public-landing-epic-pulse {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes public-landing-epic-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 214, 102, 0.3),
+      0 0 28px rgba(255, 215, 0, 0.25),
+      0 18px 40px rgba(0, 0, 0, 0.28),
+      0 0 48px rgba(212, 160, 23, 0.22);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 214, 102, 0.5),
+      0 0 42px rgba(255, 215, 0, 0.45),
+      0 18px 40px rgba(0, 0, 0, 0.28),
+      0 0 72px rgba(212, 160, 23, 0.35);
+  }
+}
+
+@media (max-width: 980px) {
+  .public-landing-hero,
+  .public-landing-steps,
+  .public-landing-carousel {
+    grid-template-columns: 1fr;
+  }
+
+  .public-landing-hero {
+    min-height: auto;
+    padding: 28px 22px;
+  }
+
+  .public-landing-hero-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .public-landing-hero-cards {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .public-landing-rarity-marquee {
+    overflow-x: auto;
+    mask-image: none;
+    padding-bottom: 8px;
+  }
+
+  .public-landing-rarity-track {
+    animation: none;
+    width: max-content;
+  }
+
+  .public-landing-hero-visual {
+    min-height: auto;
+    justify-content: flex-start;
+  }
+
+  .public-landing-hero-card-primary,
+  .public-landing-hero-card-secondary,
+  .public-landing-hero-card-tertiary {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-landing-rarity-card,
+  .public-landing-step,
+  .public-landing-feature-card {
+    transition: none;
+  }
+}

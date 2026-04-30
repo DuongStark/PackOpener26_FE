@@ -1,0 +1,187 @@
+.player-org-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--topbar-height);
+  padding: 0 20px;
+  border: 1px solid rgba(30, 111, 217, 0.3);
+  border-radius: var(--radius-panel);
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--shadow-topbar);
+}
+
+.player-org-topbar-brand {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-blue-light);
+}
+
+.player-org-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.player-org-quick-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.player-org-quick-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.74), rgba(13, 27, 46, 0.94));
+}
+
+.player-org-shelf,
+.player-org-grid,
+.player-org-detail-panel,
+.player-org-empty-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.player-org-pack-row,
+.player-org-card-row,
+.player-org-market-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.player-org-pack-card,
+.player-org-market-card,
+.player-org-board-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.72), rgba(13, 27, 46, 0.96));
+}
+
+.player-org-pack-card-top,
+.player-org-market-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.player-org-leaderboard {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.player-org-leaderboard-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.72), rgba(13, 27, 46, 0.96));
+}
+
+.player-org-leaderboard-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.player-org-leaderboard-item-rank-1 {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 1px rgba(192, 96, 255, 0.24), 0 0 28px rgba(192, 96, 255, 0.16);
+}
+
+.player-org-leaderboard-card {
+  display: flex;
+  justify-content: center;
+}
+
+.player-org-grid-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.7), rgba(13, 27, 46, 0.95));
+}
+
+.player-org-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.player-org-grid-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.player-org-grid-select {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+}
+
+.player-org-loader-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.player-org-detail-panel {
+  padding: 20px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.88), rgba(13, 27, 46, 0.98));
+  box-shadow: var(--shadow-panel);
+}
+
+.player-org-detail-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.player-org-empty-panel {
+  align-items: center;
+  padding: 28px;
+  border: 1px dashed rgba(30, 58, 95, 0.9);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.4), rgba(13, 27, 46, 0.76));
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .player-org-quick-nav,
+  .player-org-pack-row,
+  .player-org-card-row,
+  .player-org-market-row,
+  .player-org-leaderboard,
+  .player-org-grid-cards,
+  .player-org-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}

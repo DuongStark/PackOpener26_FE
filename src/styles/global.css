@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap');
+
+:root {
+  --bg-stadium: #0a0f1e;
+  --bg-overlay: rgba(10, 20, 50, 0.72);
+  --surface-base: #0d1b2e;
+  --surface-raised: #102140;
+  --surface-border: #1e3a5f;
+  --topbar-bg: rgba(8, 15, 35, 0.95);
+
+  --accent-blue: #1e6fd9;
+  --accent-blue-light: #2d8cff;
+  --coin-gold: #d4a017;
+  --coin-gold-light: #f5c842;
+  --coin-gold-dark: #9a7010;
+
+  --rarity-bronze: #cd7f32;
+  --rarity-silver: #a8a9ad;
+  --rarity-gold: #d4a017;
+  --rarity-special: #1a5fa8;
+  --rarity-elite: #6a0dad;
+
+  --feedback-success: #22c55e;
+  --feedback-warning: #f59e0b;
+  --feedback-error: #ef4444;
+  --feedback-info: #3b82f6;
+
+  --badge-hot: #ff6b35;
+  --badge-best-value: #d4a017;
+  --badge-limited: #7c3aed;
+  --metric-highlight: #22d3ee;
+  --table-header-bg: #0f2037;
+  --table-row-hover: #132845;
+  --selection-highlight: #16345a;
+
+  --text-primary: #f4f7fb;
+  --text-secondary: #b7c3d9;
+  --text-muted: #7f91b2;
+  --text-inverse: #0a0f1e;
+  --text-placeholder: #5e7298;
+  --text-on-accent: #ffffff;
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-number: 'Oswald', sans-serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
+
+  --text-heading-display-size: clamp(2.75rem, 5vw, 4.5rem);
+  --text-heading-display-line-height: 0.95;
+  --text-heading-display-weight: 700;
+
+  --text-section-title-size: clamp(1.375rem, 2vw, 1.75rem);
+  --text-section-title-line-height: 1.05;
+  --text-section-title-weight: 700;
+
+  --text-body-size: 1rem;
+  --text-body-line-height: 1.6;
+  --text-body-weight: 400;
+
+  --text-caption-size: 0.75rem;
+  --text-caption-line-height: 1.4;
+  --text-caption-weight: 400;
+
+  --text-stat-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  --text-stat-line-height: 1;
+  --text-stat-weight: 500;
+
+  --text-coin-size: clamp(1.25rem, 2vw, 1.75rem);
+  --text-coin-line-height: 1;
+  --text-coin-weight: 600;
+
+  --text-player-name-size: clamp(1rem, 1.6vw, 1.125rem);
+  --text-player-name-line-height: 0.95;
+  --text-player-name-weight: 700;
+
+  --text-label-size: 0.75rem;
+  --text-label-line-height: 1.1;
+  --text-label-weight: 600;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  --radius-card: 10px;
+  --radius-panel: 16px;
+  --radius-button: 8px;
+  --topbar-height: 56px;
+
+  --shadow-card:
+    0 4px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(30, 111, 217, 0.15);
+  --shadow-card-hover:
+    0 16px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(45, 140, 255, 0.3);
+  --shadow-panel: 0 8px 40px rgba(0, 0, 0, 0.6);
+  --shadow-topbar: 0 2px 16px rgba(0, 0, 0, 0.5);
+  --shadow-coin: 0 0 12px rgba(212, 160, 23, 0.6);
+  --shadow-gold-cta: 0 4px 20px rgba(212, 160, 23, 0.5);
+
+  --control-height: 48px;
+  --control-height-sm: 36px;
+  --input-bg: var(--surface-raised);
+  --input-border: var(--surface-border);
+  --input-radius: var(--radius-button);
+  --input-padding: var(--space-sm);
+  --control-disabled-bg: #1c2a3a;
+  --control-disabled-border: #2d3748;
+  --control-disabled-text: #4a5568;
+  --ghost-surface: rgba(255, 255, 255, 0.08);
+  --field-focus-ring: var(--accent-blue-light);
+  --avatar-fallback-bg: linear-gradient(135deg, rgba(45, 140, 255, 0.22), rgba(16, 33, 64, 0.94));
+  --card-frame-sheen: rgba(255, 255, 255, 0.18);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background:
+    linear-gradient(135deg, rgba(10, 20, 50, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%),
+    var(--bg-stadium);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}

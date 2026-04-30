@@ -1,0 +1,312 @@
+.control-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 140px;
+  height: var(--control-height);
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.control-button:focus-visible,
+.control-input:focus-visible,
+.control-select:focus-visible,
+.control-choice-input:focus-visible + .control-choice-indicator,
+.control-toggle-input:focus-visible + .control-toggle-track {
+  outline: 2px solid var(--field-focus-ring);
+  outline-offset: 3px;
+}
+
+.control-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.control-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.control-button:disabled {
+  background: var(--control-disabled-bg);
+  border-color: var(--control-disabled-border);
+  color: var(--control-disabled-text);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.control-button-primary {
+  background: var(--accent-blue);
+  color: var(--text-on-accent);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.control-button-primary:hover:not(:disabled) {
+  background: var(--accent-blue-light);
+}
+
+.control-button-gold {
+  background: linear-gradient(180deg, var(--coin-gold-light), var(--coin-gold));
+  color: var(--text-inverse);
+  font-family: var(--font-number);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.control-button-gold:hover:not(:disabled) {
+  box-shadow: var(--shadow-gold-cta);
+  filter: brightness(1.06);
+}
+
+.control-button-ghost,
+.control-button-back,
+.control-button-icon {
+  background: transparent;
+  border-color: var(--accent-blue);
+  color: var(--accent-blue-light);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.control-button-ghost:hover:not(:disabled),
+.control-button-icon:hover:not(:disabled) {
+  background: var(--ghost-surface);
+}
+
+.control-button-danger {
+  background: var(--feedback-error);
+  color: var(--text-on-accent);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.control-button-back {
+  min-width: 80px;
+  height: var(--control-height-sm);
+  padding: 0 16px;
+  border-color: var(--surface-border);
+  background: var(--ghost-surface);
+  backdrop-filter: blur(8px);
+}
+
+.control-button-label,
+.control-icon-glyph {
+  display: inline-flex;
+  align-items: center;
+}
+
+.control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-family: var(--font-display);
+  font-size: var(--text-label-size);
+  font-weight: var(--text-label-weight);
+  line-height: var(--text-label-line-height);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-blue-light);
+}
+
+.control-message {
+  font-family: var(--font-body);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line-height);
+  color: var(--text-muted);
+}
+
+.control-message-error {
+  color: var(--feedback-error);
+}
+
+.control-input,
+.control-select {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 14px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--input-radius);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: all 180ms ease;
+}
+
+.control-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.control-input:hover,
+.control-select:hover {
+  border-color: var(--accent-blue);
+}
+
+.control-input:disabled,
+.control-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.control-input-shell,
+.control-select-shell {
+  position: relative;
+  display: block;
+}
+
+.control-input-prefix,
+.control-select-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.control-input-prefix {
+  left: 14px;
+}
+
+.control-input-search {
+  padding-left: 40px;
+}
+
+.control-select {
+  appearance: none;
+  padding-right: 40px;
+}
+
+.control-select-arrow {
+  right: 14px;
+}
+
+.control-choice,
+.control-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-button);
+  background: rgba(16, 33, 64, 0.4);
+  cursor: pointer;
+}
+
+.control-choice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.control-choice-input,
+.control-toggle-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.control-choice-indicator {
+  position: relative;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-raised);
+  transition: all 180ms ease;
+}
+
+.control-choice-indicator-checkbox {
+  border-radius: 4px;
+}
+
+.control-choice-indicator-radio {
+  border-radius: 999px;
+}
+
+.control-choice-input:checked + .control-choice-indicator {
+  border-color: var(--accent-blue-light);
+  background: var(--accent-blue);
+}
+
+.control-choice-indicator-checkbox::after,
+.control-choice-indicator-radio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.control-choice-input:checked + .control-choice-indicator::after {
+  opacity: 1;
+}
+
+.control-choice-indicator-checkbox::after {
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--text-on-accent);
+  border-bottom: 2px solid var(--text-on-accent);
+  transform: rotate(-45deg);
+  top: 4px;
+}
+
+.control-choice-indicator-radio::after {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--text-on-accent);
+}
+
+.control-toggle {
+  justify-content: space-between;
+}
+
+.control-toggle-track {
+  display: inline-flex;
+  align-items: center;
+  width: 48px;
+  height: 28px;
+  padding: 3px;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  transition: all 180ms ease;
+}
+
+.control-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.control-toggle-input:checked + .control-toggle-track {
+  border-color: var(--accent-blue-light);
+  background: var(--accent-blue);
+}
+
+.control-toggle-input:checked + .control-toggle-track .control-toggle-thumb {
+  transform: translateX(20px);
+  background: var(--text-on-accent);
+}

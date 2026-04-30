@@ -1,0 +1,122 @@
+.card-pack-stat-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.card-pack-meta-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-pack-name-bar {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  overflow: hidden;
+  border: 1px solid rgba(30, 58, 95, 0.82);
+  border-radius: var(--radius-button);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.74), rgba(13, 27, 46, 0.92));
+}
+
+.card-pack-name-fit {
+  display: inline-block;
+  transform-origin: left center;
+}
+
+.card-pack-meta-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(30, 58, 95, 0.84);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.82), rgba(13, 27, 46, 0.96));
+}
+
+.card-pack-meta-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-pack-meta-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-pack-odds {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-pack-purchase-choice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card-pack-choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-button);
+  background: rgba(16, 33, 64, 0.4);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.card-pack-choice:hover {
+  border-color: var(--accent-blue);
+  background: rgba(19, 40, 69, 0.7);
+}
+
+.card-pack-choice-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-pack-choice-indicator {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  transition: all 180ms ease;
+}
+
+.card-pack-choice-input:checked + .card-pack-choice-indicator {
+  border-color: var(--accent-blue-light);
+  background: radial-gradient(circle at center, var(--text-on-accent) 0 34%, var(--accent-blue) 36% 100%);
+}
+
+.card-pack-choice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-pack-action-cluster {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .card-pack-purchase-choice {
+    grid-template-columns: 1fr;
+  }
+}

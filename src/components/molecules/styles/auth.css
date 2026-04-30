@@ -1,0 +1,126 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-form-label {
+  font-family: var(--font-display);
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  line-height: var(--text-label-line-height);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-blue-light);
+}
+
+.auth-form-hint,
+.auth-form-link {
+  font-family: var(--font-body);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line-height);
+}
+
+.auth-form-hint {
+  color: var(--text-muted);
+}
+
+.auth-form-error {
+  color: var(--feedback-error);
+}
+
+.auth-form-input-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-form-input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 14px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--input-radius);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: all 180ms ease;
+}
+
+.auth-form-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.auth-form-input:hover {
+  border-color: var(--accent-blue);
+}
+
+.auth-form-input:focus-visible,
+.auth-password-toggle:focus-visible {
+  outline: 2px solid var(--field-focus-ring);
+  outline-offset: 3px;
+}
+
+.auth-form-input[aria-invalid='true'] {
+  border-width: 2px;
+  border-color: var(--feedback-error);
+}
+
+.auth-form-input-password {
+  padding-right: 84px;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 8px;
+  min-width: 64px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(45, 140, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(8, 15, 35, 0.68);
+  color: var(--accent-blue-light);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.auth-password-toggle:hover {
+  background: rgba(19, 40, 69, 0.88);
+}
+
+.auth-form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.auth-form-footer .control-button {
+  width: 100%;
+}
+
+.auth-form-link {
+  color: var(--text-secondary);
+}
+
+.auth-form-link a {
+  color: var(--accent-blue-light);
+  text-decoration: none;
+}
+
+.auth-form-link a:hover {
+  text-decoration: underline;
+}

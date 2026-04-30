@@ -1,0 +1,212 @@
+.indicator-chip,
+.indicator-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.indicator-chip {
+  font-family: var(--font-number);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-on-accent);
+}
+
+.indicator-chip-bronze-common {
+  background: linear-gradient(135deg, #b86d38, #6a3218);
+}
+
+.indicator-chip-bronze-rare {
+  background: linear-gradient(135deg, #ebb17e, #995227 52%, #5f2613);
+}
+
+.indicator-chip-silver-common {
+  background: linear-gradient(135deg, #dbe5f0, #7d8a99);
+}
+
+.indicator-chip-silver-rare {
+  background: linear-gradient(135deg, #ffffff, #b3c1d3 44%, #6b7787);
+}
+
+.indicator-chip-gold-common {
+  background: linear-gradient(135deg, #ebc85e, #9c7110);
+}
+
+.indicator-chip-gold-rare {
+  background: linear-gradient(135deg, #fff0a0, #efbe2a 38%, #9e6d08);
+}
+
+.indicator-chip-gold-epic {
+  background: linear-gradient(135deg, #fff2ca, #ffd55a 24%, #ff972f 58%, #922f10);
+}
+
+.indicator-chip-diamond-common {
+  background: linear-gradient(135deg, #daf9ff, #67cfff 44%, #2e65d0);
+}
+
+.indicator-chip-diamond-rare {
+  background: linear-gradient(135deg, #ffffff, #d8fdff 18%, #78e7ff 42%, #4d97ff 68%, #654cff);
+}
+
+.indicator-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.indicator-badge-new {
+  color: var(--text-on-accent);
+  background: var(--feedback-success);
+  animation: indicator-pulse 1.8s ease-in-out infinite;
+}
+
+.indicator-badge-hot {
+  color: var(--text-on-accent);
+  background: var(--badge-hot);
+}
+
+.indicator-badge-status {
+  border: 1px solid transparent;
+}
+
+.indicator-badge-status-pending {
+  color: var(--feedback-warning);
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.indicator-badge-status-opened {
+  color: var(--feedback-success);
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.indicator-badge-status-sold {
+  color: var(--text-secondary);
+  border-color: rgba(183, 195, 217, 0.24);
+  background: rgba(183, 195, 217, 0.1);
+}
+
+.indicator-badge-status-error {
+  color: var(--feedback-error);
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.indicator-metric-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.indicator-metric-delta-positive {
+  color: var(--feedback-success);
+}
+
+.indicator-metric-delta-negative {
+  color: var(--feedback-error);
+}
+
+.indicator-metric-delta-neutral {
+  color: var(--text-muted);
+}
+
+.indicator-loading-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.indicator-loading-dot span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue-light);
+  animation: indicator-bounce 0.9s ease-in-out infinite;
+}
+
+.indicator-loading-dot span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.indicator-loading-dot span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.indicator-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(16, 33, 64, 0.9), rgba(13, 27, 46, 0.9));
+}
+
+.indicator-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: indicator-shimmer 1.2s linear infinite;
+}
+
+.indicator-divider {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 58, 95, 0) 0%,
+    rgba(30, 58, 95, 0.95) 18%,
+    rgba(45, 140, 255, 0.38) 50%,
+    rgba(30, 58, 95, 0.95) 82%,
+    rgba(30, 58, 95, 0) 100%
+  );
+}
+
+@keyframes indicator-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+@keyframes indicator-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes indicator-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.16);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+}

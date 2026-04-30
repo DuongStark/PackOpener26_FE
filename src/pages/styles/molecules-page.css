@@ -1,0 +1,80 @@
+.molecules-page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.molecules-hero {
+  margin-bottom: 28px;
+}
+
+.molecules-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+}
+
+.molecules-auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.molecules-auth-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.molecules-note {
+  color: var(--text-muted);
+}
+
+.molecules-link-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.molecules-button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.molecules-grid-economy {
+  margin-top: 24px;
+}
+
+.molecules-nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  background: rgba(8, 15, 35, 0.44);
+  color: var(--accent-blue-light);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.molecules-nav-link:hover {
+  background: rgba(19, 40, 69, 0.7);
+}
+
+@media (max-width: 860px) {
+  .molecules-page {
+    width: min(100%, calc(100% - 24px));
+    padding: 24px 0 40px;
+  }
+
+  .molecules-grid {
+    grid-template-columns: 1fr;
+  }
+}
