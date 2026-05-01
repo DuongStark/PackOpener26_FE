@@ -75,32 +75,44 @@ export function LandingHero() {
   return (
     <section className="public-landing-hero">
       <div className="public-landing-hero-copy">
-        <CaptionText>PackOpener2026 Mô Phỏng Mở Thẻ FC26</CaptionText>
+        <div className="public-landing-hero-eyebrow">
+          <LabelText>PackOpener2026 · FC26 Simulator</LabelText>
+        </div>
         <SectionTitle as="h1">
-          Mở Gói, Săn Thẻ Hiếm, Xây Dựng Đội Hình
+          Mở Gói · Săn Thẻ · Ngọn Lửa
         </SectionTitle>
-        <BodyText>
-          Đăng ký, nhận ngay coin khởi đầu, mua pack nổi bật, mở thẻ cầu thủ và
-          bán thẻ trùng để quay lại vòng lặp gameplay nhanh hơn.
+        <BodyText className="public-landing-hero-subtitle">
+          Đăng ký ngay để nhận 1000 coin miễn phí. Mở pack, săn thẻ hiếm & xây dựng đội hình dream team của bạn!
         </BodyText>
         <div className="public-landing-hero-badges">
-          <RarityChip rarity="DIAMOND_RARE">Diamond Rare</RarityChip>
-          <RarityChip rarity="GOLD_EPIC">Gold Epic</RarityChip>
-          <RarityChip rarity="GOLD_RARE">Gold Rare</RarityChip>
+          <RarityChip rarity="DIAMOND_RARE">◆ Diamond</RarityChip>
+          <RarityChip rarity="GOLD_EPIC">★ Gold Epic</RarityChip>
+          <RarityChip rarity="GOLD_RARE">★ Gold Rare</RarityChip>
         </div>
         <div className="public-landing-hero-actions">
-          <GoldCTAButton onClick={() => (window.location.href = "/register")}>
-            Đăng Ký Miễn Phí
-          </GoldCTAButton>
-          <GhostButton onClick={() => (window.location.href = "/login")}>
+          <button 
+            className="public-landing-hero-cta-primary"
+            onClick={() => (window.location.href = "/register")}
+          >
+            <span>Đăng Ký Miễn Phí</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+          <button 
+            className="public-landing-hero-cta-secondary"
+            onClick={() => (window.location.href = "/login")}
+          >
             Đăng Nhập
-          </GhostButton>
+          </button>
         </div>
       </div>
 
       <div className="public-landing-hero-visual">
         <div className="public-landing-hero-orbit public-landing-hero-orbit-a" />
         <div className="public-landing-hero-orbit public-landing-hero-orbit-b" />
+        <div className="public-landing-hero-orbit-c" />
+        <div className="public-landing-hero-card-glow" />
         <div className="public-landing-hero-cards">
           <div className="public-landing-hero-card-secondary">
             <img src={goldCardImage} alt="Gold epic card design" />

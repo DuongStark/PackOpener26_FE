@@ -12,9 +12,10 @@
 }
 
 .template-public-marketing-hero {
-  min-height: min(100vh, 920px);
+  min-height: auto;
   display: flex;
   align-items: center;
+  padding: 24px 0;
 }
 
 .template-public-marketing-sections {
