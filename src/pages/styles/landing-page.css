@@ -38,23 +38,88 @@
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 40%),
+              radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+              linear-gradient(180deg, #030609 0%, #0a1020 50%, #030609 100%);
+}
+
+.page-fantasy-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-fantasy-stars::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 50%, transparent 100%),
+    radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,0.4) 50%, transparent 100%),
+    radial-gradient(1px 1px at 50% 30%, rgba(255,255,255,0.5) 50%, transparent 100%),
+    radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,0.6) 50%, transparent 100%),
+    radial-gradient(1px 1px at 15% 40%, rgba(255,255,255,0.4) 50%, transparent 100%),
+    radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.5) 50%, transparent 100%),
+    radial-gradient(1px 1px at 60% 50%, rgba(255,255,255,0.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,0.6) 50%, transparent 100%),
+    radial-gradient(1px 1px at 75% 65%, rgba(255,255,255,0.4) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 5% 55%, rgba(255,215,0,0.4) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 95% 45%, rgba(96,165,250,0.5) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 85%, rgba(251,191,36,0.3) 50%, transparent 100%);
+  animation: pageStarsTwinkle 8s ease-in-out infinite;
+}
+
+.page-fantasy-stars::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 200deg at 70% 30%,
+    transparent 0deg,
+    rgba(96,165,250,0.03) 20deg,
+    transparent 40deg,
+    rgba(251,191,36,0.02) 60deg,
+    transparent 80deg
+  );
+  animation: rotatePageRays 60s linear infinite;
+}
+
+@keyframes pageStarsTwinkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes rotatePageRays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ========================================
    NAVBAR
    ======================================== */
 .landing-topbar-wrapper {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 999;
   padding: 12px 0;
   transition: all 300ms ease;
 }
 
 .landing-topbar-wrapper.scrolled {
-  background: rgba(13, 27, 42, 0.9);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 0; /* Tăng nhẹ padding khi cuộn để pill nhìn thoáng hơn */
+}
+
+.landing-topbar-wrapper.scrolled .landing-topbar {
+  background: rgba(8, 15, 35, 0.65); /* Tăng độ trong suốt để ra chất glassmorphism */
+  backdrop-filter: blur(20px); /* Làm mờ nền phía sau mạnh hơn */
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Đổ bóng nổi bật và thêm hiệu ứng viền kính sáng bên trong */
+  border-color: rgba(96, 165, 250, 0.4);
 }
 
 .landing-topbar {
@@ -197,20 +262,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-
-/* Layer 0: Base gradient */
-.hero-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 120% 80% at 60% 100%,
-    #0f2744 0%,
-    #070e1a 50%,
-    #030609 100%
-  );
-  z-index: 0;
+  background: transparent;
 }
 
 /* Layer 1: Star field */
@@ -696,11 +748,18 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 28px 20px;
+  padding: 24px 20px;
   border-radius: 16px;
-  background: var(--dark-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 250ms ease;
+}
+
+.landing-stats-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(96, 165, 250, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(96, 165, 250, 0.15);
 }
 
 .landing-stats-card.featured {
@@ -715,11 +774,6 @@
   right: 12px;
   color: var(--rarity-gold);
   font-size: 14px;
-}
-
-.landing-stats-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
 }
 
 .landing-stats-icon {
@@ -980,8 +1034,21 @@
    HOW-TO STEPS
    ======================================== */
 .landing-page-band-how {
-  background: linear-gradient(180deg, #0a1122 0%, #060912 100%);
-  padding-top: 60px;
+  position: relative;
+  background: linear-gradient(180deg, #0a1220 0%, #080d18 100%);
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+
+.landing-page-band-how::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(10, 16, 32, 0.8) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .section-title {

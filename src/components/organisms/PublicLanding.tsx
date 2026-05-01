@@ -248,8 +248,6 @@ export function FeaturedCardsCarousel() {
       position: "CM",
       nation: "🏴",
       club: "RMA",
-      league: "La Liga",
-      leagueLogo: "https://img.icons8.com/color/96/la-liga.png",
     },
     {
       name: "Erling Haaland",
@@ -258,8 +256,6 @@ export function FeaturedCardsCarousel() {
       position: "ST",
       nation: "🇳🇴",
       club: "MCI",
-      league: "Premier League",
-      leagueLogo: "https://img.icons8.com/color/96/premier-league.png",
     },
     {
       name: "Vinicius Jr",
@@ -268,8 +264,6 @@ export function FeaturedCardsCarousel() {
       position: "LW",
       nation: "🇧🇷",
       club: "RMA",
-      league: "La Liga",
-      leagueLogo: "https://img.icons8.com/color/96/la-liga.png",
     },
   ];
 
@@ -285,8 +279,6 @@ export function FeaturedCardsCarousel() {
               playerName={card.name.toUpperCase()}
               nationFlag={card.nation}
               clubCode={card.club}
-              league={card.league}
-              leagueLogo={card.leagueLogo}
             />
           </div>
         ))}

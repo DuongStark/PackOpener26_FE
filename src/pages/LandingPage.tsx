@@ -144,7 +144,7 @@ function HeroSection() {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
 
   useEffect(() => {
-    const words = ['MỞ GÓI', '·', 'SĂN THẺ', '·', 'NGỌN LỬA'];
+    const words = ['MỞ PACK', '·', 'SĂN THẺ', '·', 'CHINH PHỤC GIẤC MƠ'];
     words.forEach((_, i) => {
       setTimeout(() => {
         setVisibleWords(prev => [...prev, i]);
@@ -152,7 +152,7 @@ function HeroSection() {
     });
   }, []);
 
-  const words = ['MỞ GÓI', '·', 'SĂN THẺ', '·', 'NGỌN LỬA'];
+  const words = ['MỞ PACK', '·', 'SĂN THẺ', '·', 'CHINH PHỤC GIẤC MƠ'];
 
   return (
     <section className="hero-section">
@@ -161,14 +161,14 @@ function HeroSection() {
       </div>
       <div className="hero-god-rays" />
       <div className="hero-vignette" />
-      
+
       <div className="hero-content">
         <div className="hero-text">
           <h1 className="hero-heading">
             {words.map((word, i) => (
               <span
                 key={i}
-                className={`hero-heading-word ${visibleWords.includes(i) ? 'visible' : ''} ${word === 'NGỌN LỬA' ? 'highlight' : ''}`}
+                className={`hero-heading-word ${visibleWords.includes(i) ? 'visible' : ''} ${word === 'CHINH PHỤC GIẤC MƠ' ? 'highlight' : ''}`}
               >
                 {word}{' '}
               </span>
@@ -194,18 +194,16 @@ function HeroSection() {
             </button>
           </div>
         </div>
-        
+
         <div className="hero-visual">
           <div className="hero-card-wrapper">
-            <CardFrame 
-              className="hero-card-frame"
+            <CardFrame
               rarity="DIAMOND_RARE"
               overall={91}
               position="ST"
               playerName="HAALAND"
               nationFlag="🇳🇴"
               clubCode="MCI"
-              league="Premier League"
             />
           </div>
         </div>
@@ -217,26 +215,29 @@ function HeroSection() {
 function StatsSection() {
   return (
     <div className="landing-stats-band">
-      <div className="landing-stats-grid">
-        <div className="landing-stats-card featured">
-          <StatsIcons.packs />
-          <span className="landing-stats-number">128K+</span>
-          <span className="landing-stats-label">Pack đã mở</span>
-        </div>
-        <div className="landing-stats-card">
-          <StatsIcons.elite />
-          <span className="landing-stats-number">2,410</span>
-          <span className="landing-stats-label">Thẻ Elite</span>
-        </div>
-        <div className="landing-stats-card">
-          <StatsIcons.coin />
-          <span className="landing-stats-number">1,000</span>
-          <span className="landing-stats-label">Coin khởi đầu</span>
-        </div>
-        <div className="landing-stats-card">
-          <StatsIcons.users />
-          <span className="landing-stats-number">+4.2%</span>
-          <span className="landing-stats-label">Người chơi mới</span>
+      <div className="landing-stats-divider" />
+      <div className="landing-stats-container">
+        <div className="landing-stats-grid">
+          <div className="landing-stats-card featured">
+            <StatsIcons.packs />
+            <span className="landing-stats-number">128K+</span>
+            <span className="landing-stats-label">Pack đã mở</span>
+          </div>
+          <div className="landing-stats-card">
+            <StatsIcons.elite />
+            <span className="landing-stats-number">2,410</span>
+            <span className="landing-stats-label">Thẻ Elite</span>
+          </div>
+          <div className="landing-stats-card">
+            <StatsIcons.coin />
+            <span className="landing-stats-number">1,000</span>
+            <span className="landing-stats-label">Coin khởi đầu</span>
+          </div>
+          <div className="landing-stats-card">
+            <StatsIcons.users />
+            <span className="landing-stats-number">+4.2%</span>
+            <span className="landing-stats-label">Người chơi mới</span>
+          </div>
         </div>
       </div>
     </div>
@@ -313,7 +314,7 @@ const fakePulls = [
 
 function SocialProofMarquee() {
   const items = [...fakePulls, ...fakePulls];
-  
+
   return (
     <section className="social-proof-section">
       <div className="social-proof-header">
@@ -375,11 +376,11 @@ function LandingFooter() {
           <p className="footer-tagline">Trải nghiệm mở pack FC26 đỉnh nhất Việt Nam</p>
           <div className="footer-social">
             <a href="#" className="footer-social-link"><MessageCircle size={18} /></a>
-            <a href="#" className="footer-social-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-            <a href="#" className="footer-social-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            <a href="#" className="footer-social-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg></a>
+            <a href="#" className="footer-social-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg></a>
           </div>
         </div>
-        
+
         <div className="footer-links">
           <h4 className="footer-links-title">KHÁM PHÁ</h4>
           <a href="#rarity" className="footer-link">Tầng Thẻ</a>
@@ -387,7 +388,7 @@ function LandingFooter() {
           <a href="#featured-cards" className="footer-link">Thẻ Nổi Bật</a>
           <a href="#" className="footer-link">Bảng Xếp Hạng</a>
         </div>
-        
+
         <div className="footer-links">
           <h4 className="footer-links-title">HỖ TRỢ</h4>
           <a href="#" className="footer-link">FAQ</a>
@@ -396,7 +397,7 @@ function LandingFooter() {
           <a href="#" className="footer-link">Terms & Privacy</a>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
         © 2026 PackOpener2026. Fan-made project. Không liên kết với EA Sports.
       </div>
@@ -430,41 +431,42 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page-wrapper">
+      <div className="page-fantasy-stars" />
       <LandingTopbar scrolled={scrolled} />
       <HeroSection />
-      
+
       <StatsSection />
-      
+
       <PublicMarketingTemplate
         hero={<div />}
         sections={
           <div className="landing-page-shell">
-            <div className="landing-scroll-block is-visible" style={{ marginBottom: "64px" }}>
+            <div className="promo-banner-wrapper">
               <PromoBanner />
             </div>
-            
+
             <div className="landing-scroll-block landing-page-band landing-page-band-rarity" id="rarity">
               <h2 className="section-title">Hệ Tầng Thẻ</h2>
               <p className="section-desc">Hiểu rõ thang bậc thẻ trước khi chốt pack</p>
               <RarityShowcaseSection />
             </div>
-            
+
             <div className="landing-scroll-block landing-page-band landing-page-band-how" id="how-it-works">
               <h2 className="section-title">Cách Chơi</h2>
               <p className="section-desc">4 bước để bắt đầu hành trình</p>
               <HowToSteps />
             </div>
-            
+
             <SocialProofMarquee />
-            
+
             <div className="landing-scroll-block landing-page-band landing-page-band-featured" id="featured-cards">
               <h2 className="section-title">Thẻ Nổi Bật</h2>
               <p className="section-desc">Cho người chơi thấy rõ phần thưởng xứng đáng để đăng ký</p>
               <FeaturedCardsCarousel />
             </div>
-            
+
             <CTASection />
-            
+
             <div className="landing-scroll-block landing-page-band" id="landing-footer">
               <LandingFooter />
             </div>

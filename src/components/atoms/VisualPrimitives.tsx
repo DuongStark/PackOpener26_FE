@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes, ImgHTMLAttributes, ReactNode } from 'react'
+import React, { type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type ReactNode } from 'react'
 import './styles/visual-primitives.css'
 import { LabelText, PlayerNameText, StatNumber } from './Typography'
 import bronzeFrameBase from '../../assets/optimized/bronze.webp'
@@ -133,6 +133,38 @@ export function GlowRing({
   )
 }
 
+type TiltCardProps = HTMLAttributes<HTMLDivElement> & {
+  children: ReactNode
+  intensity?: number
+  perspective?: number
+}
+
+export function TiltCard({
+  className,
+  children,
+  ...props
+}: TiltCardProps) {
+  const containerRef = useParallax()
+
+  return (
+    <div
+      ref={containerRef}
+      className={joinClassNames('visual-tilt-card', className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+type HeroCardProps = Omit<CardFrameProps, 'glow'> & {
+  showGlow?: boolean
+}
+
+export function HeroCard(props: HeroCardProps) {
+  return <CardFrame {...props} />
+}
+
 type CardFrameProps = HTMLAttributes<HTMLDivElement> & {
   rarity?: Rarity
   overall?: number
@@ -140,8 +172,7 @@ type CardFrameProps = HTMLAttributes<HTMLDivElement> & {
   playerName?: string
   nationFlag?: string
   clubCode?: string
-  league?: string
-  leagueLogo?: string
+  glow?: boolean
 }
 
 type CardTheme = {
@@ -318,8 +349,7 @@ export function CardFrame({
   playerName = 'KVARATSKHELIA',
   nationFlag = '🇬🇪',
   clubCode = 'PSG',
-  league = 'Ligue 1',
-  leagueLogo,
+  glow = false,
   ...props
 }: CardFrameProps) {
   const resolvedRarity = resolveCardRarity(rarity)
@@ -337,7 +367,7 @@ export function CardFrame({
     '--card-frame-ornament-opacity': String(theme.ornamentOpacity),
   } as CSSProperties
 
-  return (
+  const cardElement = (
     <div
       className={joinClassNames(
         'visual-card-frame',
@@ -354,25 +384,10 @@ export function CardFrame({
         <div className="visual-card-frame-top">
           <StatNumber>{overall}</StatNumber>
           <LabelText>{position}</LabelText>
-        </div>
-
-        <div className="visual-card-frame-meta">
-          <FlagIcon flag={nationFlag} />
-          {leagueLogo ? (
-            <img 
-              src={leagueLogo} 
-              alt={league} 
-              className="visual-card-frame-league-logo"
-              onError={(e) => {
-                const target = e.currentTarget as HTMLImageElement;
-                target.style.display = 'none';
-                const label = target.parentElement?.querySelector('.visual-card-frame-league') as HTMLElement;
-                if (label) label.style.display = 'inline';
-              }}
-            />
-          ) : null}
-          <LabelText className="visual-card-frame-league" style={{ display: leagueLogo ? 'none' : 'inline' }}>{league}</LabelText>
-          <ClubBadge>{clubCode}</ClubBadge>
+          <div className="visual-card-frame-meta">
+            <FlagIcon flag={nationFlag} />
+            <ClubBadge>{clubCode}</ClubBadge>
+          </div>
         </div>
 
         <div className="visual-card-frame-art">
@@ -401,4 +416,18 @@ export function CardFrame({
       </div>
     </div>
   )
+
+  if (glow) {
+    return (
+      <div
+        className={joinClassNames('visual-card-frame-glow', className)}
+        style={{ '--card-frame-glow': theme.artGlow } as CSSProperties}
+        {...props}
+      >
+        {cardElement}
+      </div>
+    )
+  }
+
+  return cardElement
 }

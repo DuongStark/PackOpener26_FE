@@ -5,12 +5,10 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    var(--coin-gold-light),
-    var(--coin-gold) 62%,
-    var(--coin-gold-dark)
-  );
+  background: radial-gradient(circle at 30% 30%,
+      var(--coin-gold-light),
+      var(--coin-gold) 62%,
+      var(--coin-gold-dark));
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.35),
     0 0 10px rgba(212, 160, 23, 0.45);
@@ -48,11 +46,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(255, 255, 255, 0) 45%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0) 45%);
 }
 
 .visual-pack-icon-mark {
@@ -71,14 +67,17 @@
   width: min(100%, 220px);
   aspect-ratio: 2 / 3;
   border: none;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.visual-card-frame-glow .visual-card-frame-bg {
+  filter: drop-shadow(0 0 16px var(--card-frame-glow, rgba(255, 212, 93, 0.5))) drop-shadow(0 0 32px var(--card-frame-glow, rgba(255, 212, 93, 0.25)));
 }
 
 .visual-card-frame-bg {
   position: absolute;
   inset: 0;
   background: var(--card-frame-base-art) center / cover no-repeat;
-  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
 }
 
 .visual-card-frame-content {
@@ -88,45 +87,63 @@
   height: 100%;
 }
 
+
+
 .visual-card-frame-top {
   position: absolute;
-  top: 16%;
-  left: 8%;
+  top: 14%;
+  left: 12%;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
+  align-items: center;
+  gap: 2px;
 }
 
 .visual-card-frame-top .text-stat-number {
-  font-size: 2rem;
+  font-size: 2.2rem;
   line-height: 1;
   color: #fff !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .visual-card-frame-top .text-label {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #fff !important;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-  margin-top: -4px;
+  margin-bottom: 2px;
 }
 
 .visual-card-frame-meta {
-  position: absolute;
-  bottom: 8%;
-  left: 10%;
-  right: 10%;
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-direction: column;
   align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  width: 80%;
 }
 
-.visual-card-frame-league {
-  font-size: 0.6rem !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+.visual-card-frame-meta .visual-flag-icon,
+.visual-card-frame-meta .visual-club-badge {
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  min-width: unset;
+  height: auto;
+  padding: 0;
+}
+
+.visual-card-frame-meta .visual-flag-icon {
+  font-size: 1.15rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.visual-card-frame-meta .visual-club-badge {
+  font-size: 0.75rem;
+  color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
@@ -158,24 +175,19 @@
   height: 88%;
   border-radius: 36% 36% 22% 22%;
   background:
-    radial-gradient(
-      circle at 50% 18%,
+    radial-gradient(circle at 50% 18%,
       rgba(255, 255, 255, 0.42),
-      transparent 26%
-    ),
+      transparent 26%),
     linear-gradient(180deg, rgba(244, 247, 251, 0.95), rgba(183, 195, 217, 0.3));
-  clip-path: polygon(
-    50% 0%,
-    70% 16%,
-    76% 34%,
-    82% 54%,
-    74% 100%,
-    26% 100%,
-    18% 54%,
-    24% 34%,
-    30% 16%
-  );
-  filter: drop-shadow(0 0 16px var(--card-frame-glow, rgba(45, 140, 255, 0.2)));
+  clip-path: polygon(50% 0%,
+      70% 16%,
+      76% 34%,
+      82% 54%,
+      74% 100%,
+      26% 100%,
+      18% 54%,
+      24% 34%,
+      30% 16%);
 }
 
 .visual-card-frame-silhouette::before {
@@ -184,18 +196,16 @@
   inset: 10% 14% 8%;
   border-radius: 40% 40% 24% 24%;
   background:
-    radial-gradient(
-      circle at 50% 18%,
+    radial-gradient(circle at 50% 18%,
       rgba(255, 255, 255, 0.55),
-      transparent 28%
-    ),
+      transparent 28%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(159, 178, 199, 0.2));
   opacity: 0.92;
 }
 
 .visual-card-frame-name {
   position: absolute;
-  bottom: 30%;
+  bottom: 33%;
   left: 10%;
   right: 10%;
   z-index: 10;
@@ -203,40 +213,51 @@
 }
 
 .visual-card-frame-name .text-player-name {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   color: #fff !important;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 4px;
+  display: inline-block;
+  width: 80%;
 }
 
 .visual-card-frame-stats {
   position: absolute;
-  bottom: 17%;
-  left: 8%;
-  right: 8%;
+  bottom: 15%;
+  left: 22%;
+  right: 15%;
   z-index: 20;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  gap: 2px 16px;
   pointer-events: none;
 }
 
 .visual-card-frame-stat {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   align-items: center;
-  gap: 2px;
+  justify-content: flex-start;
+  gap: 4px;
 }
 
 .visual-card-frame-stat .text-stat-number {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #fff !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  width: 20px;
+  text-align: right;
 }
 
 .visual-card-frame-stat .text-label {
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -317,11 +338,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(45, 140, 255, 0.12),
-    rgba(45, 140, 255, 0) 32%
-  );
+  background: linear-gradient(135deg,
+      rgba(45, 140, 255, 0.12),
+      rgba(45, 140, 255, 0) 32%);
   pointer-events: none;
 }
 
@@ -347,7 +366,7 @@
   pointer-events: none;
 }
 
-.visual-glow-ring > * {
+.visual-glow-ring>* {
   position: relative;
   z-index: 1;
 }
