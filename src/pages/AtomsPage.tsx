@@ -267,8 +267,8 @@ export default function AtomsPage() {
             <div className="visual-primitive-stack">
               <LabelText>Flag / Club</LabelText>
               <div className="visual-inline-pair">
-                <FlagIcon flag="🇦🇷" />
-                <ClubBadge>MCI</ClubBadge>
+                <FlagIcon src="https://cdn.futbin.com/content/fifa24/img/nation/18.png" alt="France flag" />
+                <ClubBadge src="https://cdn.futbin.com/content/fifa24/img/clubs/243.png" alt="Real Madrid badge">RMA</ClubBadge>
               </div>
             </div>
           </div>
@@ -300,12 +300,15 @@ export default function AtomsPage() {
             <div className="card-frame-preview">
               <GlowRing color="rgba(192, 96, 255, 0.26)">
                 <CardFrame
-                  rarity="elite"
-                  overall={97}
-                  position="RW"
-                  playerName="LIONEL MESSI"
-                  nationFlag="🇦🇷"
-                  clubCode="MIA"
+                  rarity="DIAMOND_RARE"
+                  overall={91}
+                  position="ST"
+                  playerName="K. MBAPPÉ"
+                  nationImageSrc="https://cdn.futbin.com/content/fifa24/img/nation/18.png"
+                  clubCode="RMA"
+                  clubImageSrc="https://cdn.futbin.com/content/fifa24/img/clubs/243.png"
+                  imageSrc="https://cdn.sofifa.net/players/231/747/26_120.png"
+                  stats={{ pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 }}
                 />
               </GlowRing>
             </div>

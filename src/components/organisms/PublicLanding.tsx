@@ -1,4 +1,4 @@
-import { CardFrame, GhostButton, GoldCTAButton } from "../atoms";
+import { CardFrame } from "../atoms";
 import bronzeCardImage from "../../assets/optimized/bronze.webp";
 import diamondCardImage from "../../assets/optimized/diamond.webp";
 import goldCardImage from "../../assets/optimized/gold.webp";
@@ -54,18 +54,22 @@ function SectionShell({
   description,
   children,
 }: {
-  eyebrow: string;
-  title: string;
-  description: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
   children: ReactNode;
 }) {
+  const hasHeader = eyebrow || title || description;
+
   return (
     <section className="public-landing-section">
-      <div className="public-landing-section-header">
-        <LabelText>{eyebrow}</LabelText>
-        <SectionTitle as="h2">{title}</SectionTitle>
-        <BodyText>{description}</BodyText>
-      </div>
+      {hasHeader ? (
+        <div className="public-landing-section-header">
+          {eyebrow ? <LabelText>{eyebrow}</LabelText> : null}
+          {title ? <SectionTitle as="h2">{title}</SectionTitle> : null}
+          {description ? <BodyText>{description}</BodyText> : null}
+        </div>
+      ) : null}
       {children}
     </section>
   );
@@ -82,7 +86,7 @@ export function LandingHero() {
           Mở Gói · Săn Thẻ · Ngọn Lửa
         </SectionTitle>
         <BodyText className="public-landing-hero-subtitle">
-          Đăng ký ngay để nhận 1000 coin miễn phí. Mở pack, săn thẻ hiếm & xây dựng đội hình dream team của bạn!
+          Đăng ký ngay để nhận 300 coin miễn phí. Mở pack, săn thẻ hiếm & xây dựng đội hình dream team của bạn!
         </BodyText>
         <div className="public-landing-hero-badges">
           <RarityChip rarity="DIAMOND_RARE">◆ Diamond</RarityChip>
@@ -135,11 +139,11 @@ export function FreeCoinPromoBanner() {
       <div className="public-landing-banner-copy">
         <LabelText>THƯỞNG KHỞI ĐẦU</LabelText>
         <SectionTitle as="h2">
-          Đăng Ký Là Có Ngay 1000 Coin Để Mở Gói Đầu Tiên
+          Đăng Ký Là Có Ngay 300 Coin Để Mở Gói Đầu Tiên
         </SectionTitle>
       </div>
       <RewardPill
-        badge={<NewBadge>+1000</NewBadge>}
+        badge={<NewBadge>+300</NewBadge>}
         supportingText="Bắt đầu phiên mở pack đầu tiên ngay khi tạo tài khoản."
       />
     </section>
@@ -202,7 +206,7 @@ export function RarityShowcaseSection() {
 
 export function HowItWorksSection() {
   const steps = [
-    ["01", "Đăng Ký", "Tạo tài khoản và nhận ngay 1000 coin khởi đầu."],
+    ["01", "Đăng Ký", "Tạo tài khoản và nhận ngay 300 coin khởi đầu."],
     [
       "02",
       "Mua Gói",
@@ -244,32 +248,35 @@ export function FeaturedCardsCarousel() {
     {
       name: "K. MBAPPÉ",
       rarity: "DIAMOND_RARE" as const,
-      overall: 97,
+      overall: 91,
       position: "ST",
-      nation: "🇫🇷",
-      club: "PSG",
-      imageSrc: "https://cdn.sofifa.net/players/231/747/24_120.png",
-      stats: { pac: 97, sho: 90, pas: 80, dri: 92, def: 36, phy: 78 }
+      nationImageSrc: "https://cdn.futbin.com/content/fifa24/img/nation/18.png",
+      club: "RMA",
+      clubImageSrc: "https://cdn.futbin.com/content/fifa24/img/clubs/243.png",
+      imageSrc: "https://cdn.sofifa.net/players/231/747/26_120.png",
+      stats: { pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 }
     },
     {
-      name: "LIONEL MESSI",
-      rarity: "DIAMOND_COMMON" as const,
-      overall: 94,
-      position: "RW",
-      nation: "🇦🇷",
-      club: "MIA",
-      imageSrc: "https://cdn.sofifa.net/players/158/023/24_120.png",
-      stats: { pac: 80, sho: 87, pas: 90, dri: 94, def: 33, phy: 64 }
-    },
-    {
-      name: "K. DE BRUYNE",
+      name: "K. KVARATSKHELIA",
       rarity: "GOLD_EPIC" as const,
-      overall: 93,
-      position: "CM",
-      nation: "🇧🇪",
+      overall: 87,
+      position: "LW",
+      nationImageSrc: "https://cdn.futbin.com/content/fifa24/img/nation/20.png",
+      club: "PSG",
+      clubImageSrc: "https://cdn.futbin.com/content/fifa24/img/clubs/73.png",
+      imageSrc: "https://cdn.sofifa.net/players/247/635/26_120.png",
+      stats: { pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 }
+    },
+    {
+      name: "E. HAALAND",
+      rarity: "DIAMOND_COMMON" as const,
+      overall: 90,
+      position: "ST",
+      nationImageSrc: "https://cdn.futbin.com/content/fifa24/img/nation/36.png",
       club: "MCI",
-      imageSrc: "https://cdn.sofifa.net/players/192/985/24_120.png",
-      stats: { pac: 72, sho: 85, pas: 94, dri: 87, def: 65, phy: 78 }
+      clubImageSrc: "https://cdn.futbin.com/content/fifa24/img/clubs/10.png",
+      imageSrc: "https://cdn.sofifa.net/players/239/085/26_120.png",
+      stats: { pac: 86, sho: 91, pas: 70, dri: 80, def: 45, phy: 88 }
     },
   ];
 
@@ -283,8 +290,9 @@ export function FeaturedCardsCarousel() {
               overall={card.overall}
               position={card.position}
               playerName={card.name.toUpperCase()}
-              nationFlag={card.nation}
               clubCode={card.club}
+              nationImageSrc={card.nationImageSrc}
+              clubImageSrc={card.clubImageSrc}
               imageSrc={card.imageSrc}
               stats={card.stats}
             />
@@ -306,9 +314,9 @@ export function LandingFooter() {
         </BodyText>
       </div>
       <div className="public-landing-footer-links">
-        <a href="#rarity">Tầng Thẻ</a>
+        <a href="#rarity">Hệ Thống Độ Hiếm</a>
         <a href="#how-it-works">Cách Chơi</a>
-        <a href="#featured-cards">Thẻ Nổi Bật</a>
+        <a href="#featured-packs">Pack Nổi Bật</a>
       </div>
     </footer>
   );

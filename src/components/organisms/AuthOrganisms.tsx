@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
+import { Coins, ShieldCheck, Sparkles, Trophy } from 'lucide-react'
 import { AuthFormFooter, FormField, PasswordField, RewardPill } from '..'
 import {
   BodyText,
@@ -11,23 +13,106 @@ import {
 } from '..'
 import './styles/auth-organisms.css'
 
-export function AuthFeaturePanel() {
+type AuthMode = 'login' | 'register'
+type AuthSubmitResult = {
+  ok: boolean
+  message: string
+}
+
+async function submitLogin(): Promise<AuthSubmitResult> {
+  await new Promise((resolve) => window.setTimeout(resolve, 700))
+
+  return {
+    ok: true,
+    message: 'Thông tin đã hợp lệ. Bước tiếp theo là nối API đăng nhập thật.',
+  }
+}
+
+async function submitRegister(): Promise<AuthSubmitResult> {
+  await new Promise((resolve) => window.setTimeout(resolve, 800))
+
+  return {
+    ok: true,
+    message: 'Tài khoản có thể được tạo. Bước tiếp theo là nối API đăng ký thật.',
+  }
+}
+
+const featureCopy = {
+  login: {
+    eyebrow: 'Sẵn Sàng Mở Pack',
+    title: 'Quay Lại Sân Chơi Và Tiếp Tục Săn Thẻ Hiếm',
+    body: 'Đăng nhập để kiểm tra coin, mở pack đang chờ và tiếp tục xây dream team của bạn.',
+    reward: 'Vòng mở pack gần nhất luôn sẵn sàng khi bạn quay lại.',
+    packLabel: 'Live',
+    card: {
+      rarity: 'DIAMOND_RARE' as const,
+      overall: 91,
+      position: 'ST',
+      playerName: 'K. MBAPPÉ',
+      nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png',
+      clubCode: 'RMA',
+      clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png',
+      imageSrc: 'https://cdn.sofifa.net/players/231/747/26_120.png',
+      stats: { pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 },
+    },
+  },
+  register: {
+    eyebrow: 'Tân Binh Nhận Quà',
+    title: 'Tạo Tài Khoản Và Bắt Đầu Với 300 Coin',
+    body: 'Vào game nhanh, nhận coin khởi đầu và mở những pack đầu tiên với trải nghiệm rõ ràng.',
+    reward: '300 coin được cộng cho tài khoản mới khi luồng API được nối.',
+    packLabel: '+300',
+    card: {
+      rarity: 'GOLD_EPIC' as const,
+      overall: 87,
+      position: 'LW',
+      playerName: 'K. KVARATSKHELIA',
+      nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png',
+      clubCode: 'PSG',
+      clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png',
+      imageSrc: 'https://cdn.sofifa.net/players/247/635/26_120.png',
+      stats: { pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 },
+    },
+  },
+}
+
+export function AuthFeaturePanel({ mode = 'login' }: { mode?: AuthMode }) {
+  const copy = featureCopy[mode]
+
   return (
-    <section className="auth-organisms-feature-panel">
-      <CaptionText>Khối Kể Chuyện Trực Quan</CaptionText>
-      <SectionTitle as="h2">Vào Game Với Coin Khởi Đầu, Ở Lại Vì Những Pha Nổ Pack</SectionTitle>
+    <section className={`auth-organisms-feature-panel auth-organisms-feature-panel-${mode}`}>
+      <CaptionText>{copy.eyebrow}</CaptionText>
+      <SectionTitle as="h2">{copy.title}</SectionTitle>
       <BodyText>
-        PackOpener2026 cho người chơi mới lượng coin khởi đầu đủ để lao ngay vào vòng lặp mua gói, mở thẻ và bán thẻ trùng một cách liền mạch.
+        {copy.body}
       </BodyText>
       <RewardPill
-        badge={<NewBadge>+1000</NewBadge>}
-        supportingText="Thưởng 1000 coin luôn hiện rõ trong luồng đăng ký."
+        badge={<NewBadge>{mode === 'register' ? '+300' : 'Live'}</NewBadge>}
+        supportingText={copy.reward}
       />
+      <div className="auth-organisms-mini-stats" aria-label="Điểm nổi bật">
+        <span>
+          <Sparkles size={17} />
+          Pack hiếm
+        </span>
+        <span>
+          <Coins size={17} />
+          Coin rõ ràng
+        </span>
+        <span>
+          <Trophy size={17} />
+          Dream team
+        </span>
+      </div>
       <div className="auth-organisms-visual">
-        <PackIcon label="Mới" />
+        <PackIcon label={copy.packLabel} />
         <div className="auth-organisms-card-offset">
-          <CardFrame rarity="gold" overall={91} position="CAM" playerName="JAMAL MUSIALA" nationFlag="🇩🇪" clubCode="FCB" />
+          <CardFrame glow={mode === 'login'} {...copy.card} />
         </div>
+      </div>
+      <div className="auth-organisms-trust-strip">
+        <ShieldCheck size={18} />
+        <span>Thông tin đăng nhập được kiểm tra rõ ràng trước khi tiếp tục.</span>
       </div>
     </section>
   )
@@ -50,7 +135,7 @@ export function LoginFormPanel() {
   const passwordError =
     passwordTouched && password.trim().length === 0 ? 'Vui lòng nhập mật khẩu.' : undefined
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setEmailTouched(true)
     setPasswordTouched(true)
@@ -62,16 +147,17 @@ export function LoginFormPanel() {
 
     setIsSubmitting(true)
 
-    await new Promise((resolve) => window.setTimeout(resolve, 700))
+    const result = await submitLogin()
 
     setIsSubmitting(false)
-    setSubmitMessage('Thông tin đã hợp lệ. Bước tiếp theo là nối API đăng nhập thật.')
+    setSubmitMessage(result.message)
   }
 
   return (
-    <section className="auth-organisms-form-panel">
+    <section className="auth-organisms-form-panel auth-organisms-form-panel-login">
       <LabelText>Đăng Nhập</LabelText>
       <SectionTitle as="h2">Quay Lại Để Tiếp Tục Mở Pack</SectionTitle>
+      <BodyText>Nhập email và mật khẩu để trở lại kho pack, coin và đội hình của bạn.</BodyText>
       <form className="auth-organisms-form" onSubmit={handleSubmit} noValidate>
         <FormField
           label="Email"
@@ -96,6 +182,7 @@ export function LoginFormPanel() {
           secondaryLabel="Đăng Ký"
           secondaryHref="/register"
           disabled={isSubmitting}
+          submitTone="blue"
         />
         {submitMessage ? <p className="auth-organisms-submit-note">{submitMessage}</p> : null}
       </form>
@@ -126,7 +213,7 @@ export function RegisterFormPanel() {
   const passwordError =
     passwordTouched && password.length < 6 ? 'Mật khẩu phải có ít nhất 6 ký tự.' : undefined
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setEmailTouched(true)
     setUsernameTouched(true)
@@ -139,19 +226,19 @@ export function RegisterFormPanel() {
 
     setIsSubmitting(true)
 
-    await new Promise((resolve) => window.setTimeout(resolve, 800))
+    const result = await submitRegister()
 
     setIsSubmitting(false)
-    setSubmitMessage('Tài khoản có thể được tạo. Bước tiếp theo là nối API đăng ký thật.')
+    setSubmitMessage(result.message)
   }
 
   return (
-    <section className="auth-organisms-form-panel">
+    <section className="auth-organisms-form-panel auth-organisms-form-panel-register">
       <LabelText>Đăng Ký</LabelText>
       <SectionTitle as="h2">Tạo Tài Khoản Và Nhận Ngay Thưởng Khởi Đầu</SectionTitle>
       <RewardPill
-        badge={<NewBadge>1000</NewBadge>}
-        supportingText="Ưu đãi 1000 coin luôn được giữ nổi bật trong form."
+        badge={<NewBadge>300</NewBadge>}
+        supportingText="Ưu đãi 300 coin luôn được giữ nổi bật trong form."
       />
       <form className="auth-organisms-form" onSubmit={handleSubmit} noValidate>
         <FormField
@@ -187,6 +274,7 @@ export function RegisterFormPanel() {
           secondaryLabel="Đăng Nhập"
           secondaryHref="/login"
           disabled={isSubmitting}
+          submitTone="gold"
         />
         {submitMessage ? <p className="auth-organisms-submit-note">{submitMessage}</p> : null}
       </form>

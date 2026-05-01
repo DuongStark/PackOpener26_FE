@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingBag, Package, DollarSign, MessageCircle } from "lucide-react";
-import { CardFrame } from "../components";
+import {
+  CardFrame,
+  PACK_THEMES,
+  PackArtwork,
+  PublicMarketingTemplate,
+  RarityShowcaseSection,
+} from "../components";
 
 import "./styles/landing-page.css";
 
@@ -98,6 +104,8 @@ const starFieldData = [
   { id: 50, size: 1.5, opacity: 0.7, isTwinkle: true, top: 32, left: 55 },
 ];
 
+const heroWords = ['Mở pack', '·', 'Săn thẻ', '·', 'Chinh phục giấc mơ'];
+
 function StarField() {
   return (
     <div className="hero-star-field">
@@ -127,9 +135,9 @@ function LandingTopbar({ scrolled }: { scrolled: boolean }) {
           <span className="landing-topbar-brand-text">PackOpener2026</span>
         </div>
         <nav className="landing-topbar-nav">
-          <a href="#rarity" className="landing-topbar-nav-link">Tầng Thẻ</a>
+          <a href="#rarity" className="landing-topbar-nav-link">Hệ Thống Độ Hiếm</a>
           <a href="#how-it-works" className="landing-topbar-nav-link">Cách Chơi</a>
-          <a href="#featured-cards" className="landing-topbar-nav-link">Thẻ Nổi Bật</a>
+          <a href="#featured-packs" className="landing-topbar-nav-link">Pack Nổi Bật</a>
         </nav>
         <div className="landing-topbar-actions">
           <a href="/login" className="landing-topbar-link landing-topbar-link-secondary">Đăng Nhập</a>
@@ -144,28 +152,25 @@ function HeroSection() {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
 
   useEffect(() => {
-    const words = ['Mở pack', '·', 'Săn thẻ', '·', 'Chinh phục giấc mơ'];
-    words.forEach((_, i) => {
-      setTimeout(() => {
+    const timers = heroWords.map((_, i) =>
+      window.setTimeout(() => {
         setVisibleWords(prev => [...prev, i]);
-      }, i * 120);
-    });
-  }, []);
+      }, i * 120)
+    );
 
-  const words = ['Mở pack', '·', 'Săn thẻ', '·', 'Chinh phục giấc mơ'];
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, []);
 
   return (
     <section className="hero-section">
-      <div className="hero-star-field">
-        <StarField />
-      </div>
+      <StarField />
       <div className="hero-god-rays" />
       <div className="hero-vignette" />
 
       <div className="hero-content">
         <div className="hero-text">
           <h1 className="hero-heading">
-            {words.map((word, i) => (
+            {heroWords.map((word, i) => (
               <span
                 key={i}
                 className={`hero-heading-word ${visibleWords.includes(i) ? 'visible' : ''} ${word === 'Chinh phục giấc mơ' ? 'highlight' : ''}`}
@@ -175,7 +180,7 @@ function HeroSection() {
             ))}
           </h1>
           <p className="hero-subtitle">
-            Đăng ký ngay để nhận 1000 coin miễn phí. Mở pack, săn thẻ hiếm & xây dựng đội hình dream team của bạn!
+            Đăng ký ngay để nhận 300 coin miễn phí. Mở pack, săn thẻ hiếm & xây dựng đội hình dream team của bạn!
           </p>
           <div className="hero-badges">
             <span className="rarity-badge rarity-badge-diamond">◆ Diamond</span>
@@ -200,13 +205,14 @@ function HeroSection() {
             <div className="hero-card-secondary left">
               <CardFrame
                 rarity="GOLD_EPIC"
-                overall={95}
+                overall={87}
                 position="LW"
-                playerName="VINICIUS"
-                nationFlag="🇧🇷"
-                clubCode="RMA"
-                imageSrc="https://cdn.sofifa.net/players/238/794/24_120.png"
-                stats={{ pac: 95, sho: 82, pas: 81, dri: 90, def: 29, phy: 68 }}
+                playerName="K. KVARATSKHELIA"
+                nationImageSrc="https://cdn.futbin.com/content/fifa24/img/nation/20.png"
+                clubCode="PSG"
+                clubImageSrc="https://cdn.futbin.com/content/fifa24/img/clubs/73.png"
+                imageSrc="https://cdn.sofifa.net/players/247/635/26_120.png"
+                stats={{ pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 }}
               />
             </div>
             <div className="hero-card-primary">
@@ -214,24 +220,26 @@ function HeroSection() {
                 rarity="DIAMOND_RARE"
                 overall={91}
                 position="ST"
-                playerName="HAALAND"
-                nationFlag="🇳🇴"
-                clubCode="MCI"
+                playerName="K. MBAPPÉ"
+                nationImageSrc="https://cdn.futbin.com/content/fifa24/img/nation/18.png"
+                clubCode="RMA"
+                clubImageSrc="https://cdn.futbin.com/content/fifa24/img/clubs/243.png"
                 glow={true}
-                imageSrc="https://cdn.sofifa.net/players/239/085/24_120.png"
-                stats={{ pac: 89, sho: 93, pas: 66, dri: 80, def: 45, phy: 88 }}
+                imageSrc="https://cdn.sofifa.net/players/231/747/26_120.png"
+                stats={{ pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 }}
               />
             </div>
             <div className="hero-card-secondary right">
               <CardFrame
-                rarity="GOLD_RARE"
-                overall={96}
-                position="CM"
-                playerName="BELLINGHAM"
-                nationFlag="🏴"
-                clubCode="RMA"
-                imageSrc="https://cdn.sofifa.net/players/252/371/24_120.png"
-                stats={{ pac: 82, sho: 84, pas: 83, dri: 88, def: 78, phy: 82 }}
+                rarity="DIAMOND_COMMON"
+                overall={90}
+                position="ST"
+                playerName="E. HAALAND"
+                nationImageSrc="https://cdn.futbin.com/content/fifa24/img/nation/36.png"
+                clubCode="MCI"
+                clubImageSrc="https://cdn.futbin.com/content/fifa24/img/clubs/10.png"
+                imageSrc="https://cdn.sofifa.net/players/239/085/26_120.png"
+                stats={{ pac: 86, sho: 91, pas: 70, dri: 80, def: 45, phy: 88 }}
               />
             </div>
           </div>
@@ -244,29 +252,26 @@ function HeroSection() {
 function StatsSection() {
   return (
     <div className="landing-stats-band">
-      <div className="landing-stats-divider" />
-      <div className="landing-stats-container">
-        <div className="landing-stats-grid">
-          <div className="landing-stats-card featured">
-            <StatsIcons.packs />
-            <span className="landing-stats-number">128K+</span>
-            <span className="landing-stats-label">Pack đã mở</span>
-          </div>
-          <div className="landing-stats-card">
-            <StatsIcons.elite />
-            <span className="landing-stats-number">2,410</span>
-            <span className="landing-stats-label">Thẻ Elite</span>
-          </div>
-          <div className="landing-stats-card">
-            <StatsIcons.coin />
-            <span className="landing-stats-number">1,000</span>
-            <span className="landing-stats-label">Coin khởi đầu</span>
-          </div>
-          <div className="landing-stats-card">
-            <StatsIcons.users />
-            <span className="landing-stats-number">+4.2%</span>
-            <span className="landing-stats-label">Người chơi mới</span>
-          </div>
+      <div className="landing-stats-grid">
+        <div className="landing-stats-card featured">
+          <StatsIcons.packs />
+          <span className="landing-stats-number">16</span>
+          <span className="landing-stats-label">Loại pack</span>
+        </div>
+        <div className="landing-stats-card">
+          <StatsIcons.elite />
+          <span className="landing-stats-number">18,000+</span>
+          <span className="landing-stats-label">Thẻ cầu thủ</span>
+        </div>
+        <div className="landing-stats-card">
+          <StatsIcons.coin />
+          <span className="landing-stats-number">300</span>
+          <span className="landing-stats-label">Coin khởi đầu</span>
+        </div>
+        <div className="landing-stats-card">
+          <StatsIcons.users />
+          <span className="landing-stats-number">+4.2%</span>
+          <span className="landing-stats-label">Người chơi mới</span>
         </div>
       </div>
     </div>
@@ -278,7 +283,7 @@ function PromoBanner() {
     <div className="promo-banner">
       <div className="promo-banner-content">
         <span className="promo-banner-label">THƯỞNG KHỞI ĐẦU</span>
-        <h3 className="promo-banner-title">Đăng Ký Là Có Ngay 1000 Coin Để Mở Gói Đầu Tiên</h3>
+        <h3 className="promo-banner-title">Đăng Ký Là Có Ngay 300 Coin Để Mở Gói Đầu Tiên</h3>
       </div>
       <div className="promo-banner-coin">
         <svg className="promo-banner-coin-icon" viewBox="0 0 24 24">
@@ -292,7 +297,7 @@ function PromoBanner() {
           </defs>
           <text x="12" y="16" textAnchor="middle" fill="#0D1B2A" fontSize="10" fontWeight="bold">$</text>
         </svg>
-        <span className="promo-banner-coin-text">+1K</span>
+        <span className="promo-banner-coin-text">+300</span>
         <div className="promo-banner-coin-sub">
           <span>COIN</span>
           <span>MIỄN PHÍ</span>
@@ -335,10 +340,29 @@ function HowToSteps() {
 const fakePulls = [
   { user: 'Nguyễn V.A.', player: 'MBAPPE', rating: 97, rarity: 'diamond' },
   { user: 'Trần M.H.', player: 'HAALAND', rating: 94, rarity: 'epic' },
-  { user: 'Lê Q.B.', player: 'RONALDO', rating: 95, rarity: 'gold' },
-  { user: 'Phạm T.K.', player: 'MESSI', rating: 96, rarity: 'diamond' },
-  { user: 'Hoàng D.N.', player: 'DE BRUYNE', rating: 93, rarity: 'epic' },
-  { user: 'Vũ H.L.', player: 'VINICIUS', rating: 91, rarity: 'gold' },
+  { user: 'Lê Q.B.', player: 'KVARATSKHELIA', rating: 87, rarity: 'epic' },
+  { user: 'Phạm T.K.', player: 'MBAPPÉ', rating: 91, rarity: 'diamond' },
+  { user: 'Hoàng D.N.', player: 'HAALAND', rating: 90, rarity: 'diamond' },
+  { user: 'Vũ H.L.', player: 'KVARATSKHELIA', rating: 87, rarity: 'epic' },
+];
+
+const faqs = [
+  {
+    question: "Trò chơi này có hoàn toàn miễn phí không?",
+    answer: "Có, PackOpener2026 hoàn toàn miễn phí. Bạn sẽ nhận 300 coin lúc tạo tài khoản mới. Bạn có thể kiếm thêm coin bằng cách điểm danh hàng ngày hoặc bán những thẻ không cần thiết lên Thị trường chuyển nhượng."
+  },
+  {
+    question: "Làm sao để kiếm được thẻ bài hiếm (Diamond, Icon)?",
+    answer: "Tỉ lệ rớt thẻ phụ thuộc vào loại gói (Pack) bạn mua trong cửa hàng. Các gói đắt tiền sẽ có tỉ lệ bảo hiểm thẻ hiếm cao hơn. Ngoài ra, thỉnh thoảng sẽ có sự kiện tăng tỉ lệ đặc biệt."
+  },
+  {
+    question: "Tôi có thể trao đổi thẻ với người chơi khác không?",
+    answer: "Hiện tại Marketplace cho phép bạn bán thẻ để lấy Coin. Chức năng Trao đổi trực tiếp (Trade) giữa 2 người chơi đang trong quá trình phát triển và sẽ sớm ra mắt."
+  },
+  {
+    question: "Tỉ lệ mở thẻ (Drop rate) có minh bạch không?",
+    answer: "Hoàn toàn minh bạch! Tỉ lệ rơi của mỗi cấp độ thẻ (Bronze, Silver, Gold, Diamond) đều được công khai ngay trong phần Chi tiết gói trước khi bạn bấm mua."
+  },
 ];
 
 function SocialProofMarquee() {
@@ -367,6 +391,33 @@ function SocialProofMarquee() {
   );
 }
 
+const featuredPackKeys = ['starter-pack', 'silver-plus', 'ultimate-pack'] as const;
+
+function FeaturedPacksShowcase() {
+  const packs = featuredPackKeys
+    .map((key) => PACK_THEMES.find((pack) => pack.key === key))
+    .filter((pack): pack is (typeof PACK_THEMES)[number] => Boolean(pack));
+
+  return (
+    <div className="landing-pack-showcase">
+      {packs.map((pack) => (
+        <article className="landing-pack-card" key={pack.key}>
+          <PackArtwork theme={pack} compact />
+          <div className="landing-pack-card-copy">
+            <span className="landing-pack-card-subtitle">{pack.subtitle}</span>
+            <h3>{pack.name}</h3>
+            <p>{pack.oddsTeaser}</p>
+          </div>
+          <div className="landing-pack-card-meta">
+            <span>{pack.cardCount} thẻ</span>
+            <strong>{pack.price === 0 ? 'Free' : `${pack.price.toLocaleString('en-US')} coin`}</strong>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 function CTASection() {
   return (
     <section className="cta-section">
@@ -376,7 +427,7 @@ function CTASection() {
           BẮT ĐẦU<br />
           <span className="cta-heading-highlight">NGAY HÔM NAY</span>
         </h2>
-        <p className="cta-sub">Đăng ký miễn phí. Nhận 1000 coin. Không cần thẻ tín dụng.</p>
+        <p className="cta-sub">Đăng ký miễn phí. Nhận 300 coin. Không cần thẻ tín dụng.</p>
         <div className="cta-buttons">
           <button className="cta-btn-primary" onClick={() => window.location.href = "/register"}>
             ĐĂNG KÝ MIỄN PHÍ →
@@ -385,9 +436,42 @@ function CTASection() {
         </div>
         <div className="cta-trust">
           <span className="cta-trust-item">✓ Miễn phí mãi mãi</span>
-          <span className="cta-trust-item">✓ 1000 coin khởi đầu</span>
+          <span className="cta-trust-item">✓ 300 coin khởi đầu</span>
           <span className="cta-trust-item">✓ Không quảng cáo</span>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <section className="landing-faq-section">
+      <div className="landing-faq-header">
+        <h2 className="section-title">Câu Hỏi Thường Gặp</h2>
+        <p className="section-desc">Giải đáp những thắc mắc phổ biến nhất của người chơi</p>
+      </div>
+      <div className="landing-faq-list">
+        {faqs.map((faq, index) => {
+          const isOpen = openIndex === index;
+          return (
+            <div 
+              key={faq.question}
+              className={`landing-faq-item ${isOpen ? 'active' : ''}`}
+              onClick={() => setOpenIndex(isOpen ? null : index)}
+            >
+              <div className="landing-faq-question">
+                <h3>{faq.question}</h3>
+                <span className="landing-faq-icon">{isOpen ? '−' : '+'}</span>
+              </div>
+              <div className="landing-faq-answer">
+                <p>{faq.answer}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -412,9 +496,9 @@ function LandingFooter() {
 
         <div className="footer-links">
           <h4 className="footer-links-title">KHÁM PHÁ</h4>
-          <a href="#rarity" className="footer-link">Tầng Thẻ</a>
+          <a href="#rarity" className="footer-link">Hệ Thống Độ Hiếm</a>
           <a href="#how-it-works" className="footer-link">Cách Chơi</a>
-          <a href="#featured-cards" className="footer-link">Thẻ Nổi Bật</a>
+          <a href="#featured-packs" className="footer-link">Pack Nổi Bật</a>
           <a href="#" className="footer-link">Bảng Xếp Hạng</a>
         </div>
 
@@ -467,16 +551,13 @@ export default function LandingPage() {
       <StatsSection />
 
       <PublicMarketingTemplate
-        hero={<div />}
         sections={
           <div className="landing-page-shell">
-            <div className="promo-banner-wrapper">
-              <PromoBanner />
-            </div>
+            <PromoBanner />
 
             <div className="landing-scroll-block landing-page-band landing-page-band-rarity" id="rarity">
-              <h2 className="section-title">Hệ Tầng Thẻ</h2>
-              <p className="section-desc">Hiểu rõ thang bậc thẻ trước khi chốt pack</p>
+              <h2 className="section-title">Hệ Thống Độ Hiếm</h2>
+              <p className="section-desc">Độ hiếm đa dạng lên đến 9 loại cho trải nghiệm mở thẻ thêm đặc sắc.</p>
               <RarityShowcaseSection />
             </div>
 
@@ -488,10 +569,14 @@ export default function LandingPage() {
 
             <SocialProofMarquee />
 
-            <div className="landing-scroll-block landing-page-band landing-page-band-featured" id="featured-cards">
-              <h2 className="section-title">Thẻ Nổi Bật</h2>
-              <p className="section-desc">Cho người chơi thấy rõ phần thưởng xứng đáng để đăng ký</p>
-              <FeaturedCardsCarousel />
+            <div className="landing-scroll-block landing-page-band landing-page-band-featured" id="featured-packs">
+              <h2 className="section-title">Pack Nổi Bật</h2>
+              <p className="section-desc">Chọn gói phù hợp với coin khởi đầu, mục tiêu nâng cấp và nhịp săn thẻ của bạn.</p>
+              <FeaturedPacksShowcase />
+            </div>
+
+            <div className="landing-scroll-block landing-page-band landing-page-band-faq" id="faq">
+              <FAQSection />
             </div>
 
             <CTASection />
@@ -501,22 +586,7 @@ export default function LandingPage() {
             </div>
           </div>
         }
-        footer={<div />}
       />
     </div>
-  );
-}
-
-import { RarityShowcaseSection, FeaturedCardsCarousel } from "../components";
-
-function PublicMarketingTemplate({ hero, sections, footer }: { hero: React.ReactNode; sections: React.ReactNode; footer: React.ReactNode }) {
-  return (
-    <main className="template-public-marketing">
-      <div className="template-public-marketing-shell">
-        <section className="template-public-marketing-hero">{hero}</section>
-        <div className="template-public-marketing-sections">{sections}</div>
-        {footer}
-      </div>
-    </main>
   );
 }

@@ -14,10 +14,14 @@ export default function RegisterPage() {
       className="auth-page-root auth-page-register"
       style={{ '--auth-page-image': `url(${heroImage})` } as CSSProperties}
     >
+      <div className="auth-page-stars" aria-hidden="true" />
       <div className="auth-page-chrome">
         <div className="auth-page-brand">
-          <LabelText>PackOpener2026</LabelText>
-          <span className="auth-page-brand-note">Tạo tài khoản và nhận ngay 1000 coin khởi đầu</span>
+          <span className="auth-page-logo" aria-hidden="true" />
+          <div className="auth-page-brand-copy">
+            <LabelText>PackOpener2026</LabelText>
+            <span className="auth-page-brand-note">Tạo tài khoản và nhận ngay 300 coin khởi đầu</span>
+          </div>
         </div>
         <div className="auth-page-links">
           <a className="auth-page-link" href="/">
@@ -32,7 +36,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <AuthSpotlightTemplate formPanel={<RegisterFormPanel />} visualPanel={<AuthFeaturePanel />} />
+      <AuthSpotlightTemplate formPanel={<RegisterFormPanel />} visualPanel={<AuthFeaturePanel mode="register" />} />
     </div>
   )
 }

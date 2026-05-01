@@ -6,14 +6,14 @@ export function PublicMarketingTemplate({
   sections,
   footer,
 }: {
-  hero: ReactNode
+  hero?: ReactNode
   sections: ReactNode
-  footer: ReactNode
+  footer?: ReactNode
 }) {
   return (
     <main className="template-public-marketing">
       <div className="template-public-marketing-shell">
-        <section className="template-public-marketing-hero">{hero}</section>
+        {hero ? <section className="template-public-marketing-hero">{hero}</section> : null}
         <div className="template-public-marketing-sections">{sections}</div>
         {footer}
       </div>

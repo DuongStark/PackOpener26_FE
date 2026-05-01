@@ -1,14 +1,167 @@
 import { useEffect, useId, useRef } from 'react'
-import type { HTMLAttributes } from 'react'
+import type { CSSProperties, HTMLAttributes } from 'react'
+import {
+  BrickWallShield,
+  Circle,
+  CircleDot,
+  Crosshair,
+  Crown,
+  Gem,
+  Goal,
+  Hand,
+  Layers,
+  Plus,
+  Shield,
+  Sparkles,
+  Star,
+  Zap,
+} from 'lucide-react'
 import { GhostButton, GoldCTAButton, PrimaryButton } from '../atoms/Controls'
 import { PriceText, StatLabel, TableCellNumber } from '../atoms/DataAtoms'
 import { RarityChip } from '../atoms/Indicators'
 import { ClubBadge, FlagIcon } from '../atoms/VisualPrimitives'
 import { BodyText, CaptionText, LabelText, StatNumber } from '../atoms/Typography'
+import { PACK_THEMES, type PackIconName, type PackKey, type PackTheme } from './packThemes'
 import './styles/card-pack.css'
 
 function joinClassNames(...classNames: Array<string | undefined>) {
   return classNames.filter(Boolean).join(' ')
+}
+
+const packThemeByKey = new Map(PACK_THEMES.map((theme) => [theme.key, theme]))
+
+function PackCrestIcon({ icon }: { icon: PackIconName }) {
+  if (icon === 'lifeline') {
+    return (
+      <>
+        <Shield />
+        <Plus className="card-pack-crest-subicon" />
+      </>
+    )
+  }
+
+  if (icon === 'shield-plus') {
+    return (
+      <>
+        <Shield />
+        <Plus className="card-pack-crest-subicon" />
+      </>
+    )
+  }
+
+  if (icon === 'rare-star') {
+    return (
+      <>
+        <Star />
+        <Gem className="card-pack-crest-subicon" />
+      </>
+    )
+  }
+
+  if (icon === 'ultimate') {
+    return (
+      <>
+        <Crown />
+        <Sparkles className="card-pack-crest-subicon" />
+      </>
+    )
+  }
+
+  const icons = {
+    shield: Shield,
+    star: Star,
+    stack: Layers,
+    wall: BrickWallShield,
+    glove: Hand,
+    midfield: Crosshair,
+    forward: Zap,
+    crown: Crown,
+  } satisfies Record<Exclude<PackIconName, 'lifeline' | 'shield-plus' | 'rare-star' | 'ultimate'>, typeof Shield>
+
+  const Icon = icons[icon]
+  return <Icon />
+}
+
+function formatPackPrice(price: number) {
+  if (price === 0) {
+    return 'FREE'
+  }
+
+  if (price >= 1000) {
+    return `${Number.isInteger(price / 1000) ? price / 1000 : (price / 1000).toFixed(1)}K`
+  }
+
+  return price.toString()
+}
+
+export function PackArtwork({
+  packKey,
+  theme,
+  compact = false,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement> & {
+  packKey?: PackKey | string
+  theme?: PackTheme
+  compact?: boolean
+}) {
+  const packTheme = theme ?? (packKey ? packThemeByKey.get(packKey) : undefined) ?? PACK_THEMES[0]
+  const style = {
+    '--pack-dark': packTheme.dark,
+    '--pack-primary': packTheme.primary,
+    '--pack-secondary': packTheme.secondary,
+    '--pack-light': packTheme.light,
+    '--pack-accent': packTheme.accent,
+    '--pack-glow': packTheme.glow,
+  } as CSSProperties
+
+  return (
+    <div
+      className={joinClassNames(
+        'card-pack-artwork',
+        `card-pack-material-${packTheme.material}`,
+        `card-pack-pattern-${packTheme.pattern}`,
+        `card-pack-shine-${packTheme.shine}`,
+        compact ? 'card-pack-artwork-compact' : undefined,
+        className,
+      )}
+      style={style}
+      aria-label={`${packTheme.name} artwork`}
+      {...props}
+    >
+      <div className="card-pack-crimp card-pack-crimp-top" />
+      <div className="card-pack-crimp card-pack-crimp-bottom" />
+      <div className="card-pack-side-fold" />
+      <div className="card-pack-inner">
+        <div className="card-pack-brand-row">
+          <span>PACKOPENER 26</span>
+          <span>{packTheme.tierCode}</span>
+        </div>
+        <div className="card-pack-title-panel">
+          <strong>{packTheme.name}</strong>
+          <span>{packTheme.subtitle}</span>
+        </div>
+        <div className="card-pack-crest" aria-hidden="true">
+          <PackCrestIcon icon={packTheme.icon} />
+        </div>
+        <div className="card-pack-orbit" aria-hidden="true">
+          <Circle />
+          <CircleDot />
+          <Goal />
+        </div>
+        <div className="card-pack-bottom-chips">
+          <span>{packTheme.cardCount} CARDS</span>
+          <span>{formatPackPrice(packTheme.price)}</span>
+        </div>
+      </div>
+      <div className="card-pack-particles" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  )
 }
 
 export function PlayerStatItem({

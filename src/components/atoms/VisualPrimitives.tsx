@@ -1,4 +1,4 @@
-import React, { type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type ReactNode } from 'react'
+import { useRef, type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type ReactNode } from 'react'
 import './styles/visual-primitives.css'
 import { LabelText, PlayerNameText, StatNumber } from './Typography'
 import bronzeFrameBase from '../../assets/optimized/bronze.webp'
@@ -21,6 +21,10 @@ type Rarity = CardRarity | LegacyRarity
 
 function joinClassNames(...classNames: Array<string | undefined>) {
   return classNames.filter(Boolean).join(' ')
+}
+
+function useParallax() {
+  return useRef<HTMLDivElement>(null)
 }
 
 export function CoinIcon({
@@ -50,11 +54,13 @@ export function PackIcon({
 export function FlagIcon({
   className,
   flag = '🇫🇷',
+  src,
+  alt = 'Nation flag',
   ...props
-}: HTMLAttributes<HTMLSpanElement> & { flag?: string }) {
+}: HTMLAttributes<HTMLSpanElement> & { flag?: string; src?: string; alt?: string }) {
   return (
     <span className={joinClassNames('visual-flag-icon', className)} {...props}>
-      {flag}
+      {src ? <img src={src} alt={alt} referrerPolicy="no-referrer" /> : flag}
     </span>
   )
 }
@@ -62,11 +68,13 @@ export function FlagIcon({
 export function ClubBadge({
   className,
   children = 'PSG',
+  src,
+  alt = 'Club badge',
   ...props
-}: HTMLAttributes<HTMLSpanElement>) {
+}: HTMLAttributes<HTMLSpanElement> & { src?: string; alt?: string }) {
   return (
     <span className={joinClassNames('visual-club-badge', className)} {...props}>
-      {children}
+      {src ? <img src={src} alt={alt} referrerPolicy="no-referrer" /> : children}
     </span>
   )
 }
@@ -171,7 +179,9 @@ type CardFrameProps = HTMLAttributes<HTMLDivElement> & {
   position?: string
   playerName?: string
   nationFlag?: string
+  nationImageSrc?: string
   clubCode?: string
+  clubImageSrc?: string
   glow?: boolean
   imageSrc?: string
   stats?: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number }
@@ -350,7 +360,9 @@ export function CardFrame({
   position = 'LW',
   playerName = 'KVARATSKHELIA',
   nationFlag = '🇬🇪',
+  nationImageSrc,
   clubCode = 'PSG',
+  clubImageSrc,
   glow = false,
   imageSrc,
   stats = { pac: 80, sho: 80, pas: 80, dri: 80, def: 80, phy: 80 }, // Fallback
@@ -389,8 +401,8 @@ export function CardFrame({
           <StatNumber>{overall}</StatNumber>
           <LabelText>{position}</LabelText>
           <div className="visual-card-frame-meta">
-            <FlagIcon flag={nationFlag} />
-            <ClubBadge>{clubCode}</ClubBadge>
+            <FlagIcon flag={nationFlag} src={nationImageSrc} alt={`${playerName} nation`} />
+            <ClubBadge src={clubImageSrc} alt={`${clubCode} badge`}>{clubCode}</ClubBadge>
           </div>
         </div>
 

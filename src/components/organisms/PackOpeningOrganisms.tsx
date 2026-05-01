@@ -90,9 +90,9 @@ export function RevealCueSequence() {
 export function CardRevealRail() {
   const replayKey = useReplayKey(3600)
   const cards = [
-    { name: 'KYLIAN MBAPPE', rarity: 'special' as const, overall: 95, nation: '🇫🇷', club: 'RMA' },
-    { name: 'LIONEL MESSI', rarity: 'elite' as const, overall: 97, nation: '🇦🇷', club: 'MIA' },
-    { name: 'ERLING HAALAND', rarity: 'gold' as const, overall: 94, nation: '🇳🇴', club: 'MCI' },
+    { name: 'K. MBAPPÉ', rarity: 'DIAMOND_RARE' as const, overall: 91, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png', club: 'RMA', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png' },
+    { name: 'K. KVARATSKHELIA', rarity: 'GOLD_EPIC' as const, overall: 87, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png', club: 'PSG', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png' },
+    { name: 'E. HAALAND', rarity: 'DIAMOND_COMMON' as const, overall: 90, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png', club: 'MCI', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png' },
   ]
 
   return (
@@ -111,8 +111,9 @@ export function CardRevealRail() {
                 overall={card.overall}
                 position="ST"
                 playerName={card.name}
-                nationFlag={card.nation}
                 clubCode={card.club}
+                nationImageSrc={card.nationImageSrc}
+                clubImageSrc={card.clubImageSrc}
               />
             </div>
           ))}
@@ -127,8 +128,8 @@ export function PackResultSummary() {
     <section className="pack-opening-result-summary">
       <LabelText>PackResultSummary</LabelText>
       <SectionTitle as="h2">3 Cards Revealed</SectionTitle>
-      <BodyText>Best pull: Lionel Messi 97 OVR Elite. Total sell value preview is ready for the next decision.</BodyText>
-      <RarityChip rarity="elite">Best Card</RarityChip>
+      <BodyText>Best pull: K. Mbappé 91 OVR Diamond Rare. Total sell value preview is ready for the next decision.</BodyText>
+      <RarityChip rarity="DIAMOND_RARE">Best Card</RarityChip>
       <div className="pack-opening-result-actions">
         <PrimaryButton>View Cards</PrimaryButton>
         <GhostButton>Sell Later</GhostButton>

@@ -26,30 +26,27 @@
 .public-landing-hero::before {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  inset: -50%;
   background: 
-    radial-gradient(circle at 30% 30%, rgba(45, 140, 255, 0.06) 0%, transparent 25%),
-    radial-gradient(circle at 70% 70%, rgba(212, 160, 23, 0.04) 0%, transparent 25%),
-    radial-gradient(circle at 50% 50%, rgba(88, 204, 255, 0.03) 0%, transparent 30%);
-  animation: public-landing-bg-shift 20s linear infinite;
+    radial-gradient(ellipse 100% 100% at 30% 20%, rgba(45, 140, 255, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 70% 80%, rgba(212, 160, 23, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(88, 204, 255, 0.06) 0%, transparent 60%);
+  filter: blur(30px);
   pointer-events: none;
 }
 
 @keyframes public-landing-bg-shift {
   0% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
   33% {
-    transform: translate(-5%, -3%) rotate(1deg);
+    transform: translate(-2%, -1%);
   }
   66% {
-    transform: translate(5%, 3%) rotate(-1deg);
+    transform: translate(2%, 1%);
   }
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
 }
 

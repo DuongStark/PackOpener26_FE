@@ -14,7 +14,9 @@ import {
   HotBadge,
   LabelText,
   LoadingDot,
+  PACK_THEMES,
   PackActionCluster,
+  PackArtwork,
   PackMetaBlock,
   PackPurchaseChoice,
   PriceText,
@@ -79,25 +81,26 @@ export function QuickNavPanel() {
 
 export function FeaturedPackShelf() {
   const packs = [
-    ['Elite Pack', 120000, 'Guaranteed 1 Gold+ player'],
-    ['Promo Pack', 180000, 'Increased Special card chance'],
-    ['Starter Pack', 30000, 'Cheap entry for first session'],
-  ] as const
+    PACK_THEMES.find((pack) => pack.key === 'ultimate-pack') ?? PACK_THEMES[15],
+    PACK_THEMES.find((pack) => pack.key === 'elite-pack') ?? PACK_THEMES[14],
+    PACK_THEMES.find((pack) => pack.key === 'starter-pack') ?? PACK_THEMES[1],
+  ]
 
   return (
     <section className="player-org-shelf">
       <BlockHeader eyebrow="Featured Pack Shelf" title="Highlighted Packs" description="Home and market should drive users to the next buy action quickly." />
       <div className="player-org-pack-row">
-        {packs.map(([name, price, teaser]) => (
-          <div className="player-org-pack-card" key={name}>
+        {packs.map((pack) => (
+          <div className="player-org-pack-card" key={pack.key}>
+            <PackArtwork theme={pack} compact />
             <div className="player-org-pack-card-top">
               <div>
-                <SectionTitle as="h3">{name}</SectionTitle>
-                <PriceText>{price.toLocaleString('en-US')}</PriceText>
+                <SectionTitle as="h3">{pack.name}</SectionTitle>
+                <PriceText>{pack.price.toLocaleString('en-US')}</PriceText>
               </div>
               <HotBadge>Hot</HotBadge>
             </div>
-            <PackMetaBlock price={price} cardCount={3} oddsTeaser={teaser} />
+            <PackMetaBlock price={pack.price} cardCount={pack.cardCount} oddsTeaser={pack.oddsTeaser} />
             <PackActionCluster />
           </div>
         ))}
@@ -108,9 +111,9 @@ export function FeaturedPackShelf() {
 
 export function RareCardLeaderboard() {
   const cards = [
-    { rank: '01', name: 'LIONEL MESSI', rarity: 'elite' as const, overall: 97, position: 'RW', nation: '🇦🇷', club: 'MIA' },
-    { rank: '02', name: 'KYLIAN MBAPPE', rarity: 'special' as const, overall: 95, position: 'ST', nation: '🇫🇷', club: 'RMA' },
-    { rank: '03', name: 'JUDE BELLINGHAM', rarity: 'gold' as const, overall: 94, position: 'CM', nation: '🏴', club: 'RMA' },
+    { rank: '01', name: 'K. MBAPPÉ', rarity: 'DIAMOND_RARE' as const, overall: 91, position: 'ST', nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png', club: 'RMA', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png' },
+    { rank: '02', name: 'K. KVARATSKHELIA', rarity: 'GOLD_EPIC' as const, overall: 87, position: 'LW', nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png', club: 'PSG', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png' },
+    { rank: '03', name: 'E. HAALAND', rarity: 'DIAMOND_COMMON' as const, overall: 90, position: 'ST', nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png', club: 'MCI', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png' },
   ]
 
   return (
@@ -132,8 +135,9 @@ export function RareCardLeaderboard() {
                 overall={card.overall}
                 position={card.position}
                 playerName={card.name}
-                nationFlag={card.nation}
                 clubCode={card.club}
+                nationImageSrc={card.nationImageSrc}
+                clubImageSrc={card.clubImageSrc}
               />
             </div>
           </div>
@@ -161,15 +165,22 @@ function GridShell({
 }
 
 export function PackInventoryGrid() {
+  const inventoryPacks = [
+    PACK_THEMES.find((pack) => pack.key === 'elite-pack') ?? PACK_THEMES[14],
+    PACK_THEMES.find((pack) => pack.key === 'gold-pack') ?? PACK_THEMES[6],
+    PACK_THEMES.find((pack) => pack.key === 'goalkeeper-pack') ?? PACK_THEMES[10],
+  ]
+
   return (
     <GridShell title="PackInventoryGrid" description="Inventory stores unopened packs and keeps CTA back to gameplay loop.">
       <div className="player-org-grid-cards">
-        {['Elite Pack', 'Promo Pack', 'Gold Pack'].map((name) => (
-          <div className="player-org-grid-card" key={name}>
+        {inventoryPacks.map((pack) => (
+          <div className="player-org-grid-card" key={pack.key}>
             <SurfacePanel padding={16}>
-              <SectionTitle as="h3">{name}</SectionTitle>
+              <PackArtwork theme={pack} compact />
+              <SectionTitle as="h3">{pack.name}</SectionTitle>
               <CaptionText>PENDING</CaptionText>
-              <PackMetaBlock price={60000} cardCount={3} oddsTeaser="Gold+ guaranteed" />
+              <PackMetaBlock price={pack.price} cardCount={pack.cardCount} oddsTeaser={pack.oddsTeaser} />
             </SurfacePanel>
           </div>
         ))}
@@ -185,12 +196,24 @@ export function CardCollectionGrid() {
   return (
     <GridShell title="CardCollectionGrid" description="Collection grid supports multi-select and infinite loading.">
       <div className="player-org-grid-cards">
-        {['Messi', 'Haaland', 'Musiala'].map((name, index) => (
-          <div className="player-org-grid-card" key={name}>
+        {[
+          { name: 'K. Mbappé', rarity: 'DIAMOND_RARE' as const, overall: 91, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png', club: 'RMA', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png' },
+          { name: 'K. Kvaratskhelia', rarity: 'GOLD_EPIC' as const, overall: 87, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png', club: 'PSG', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png' },
+          { name: 'E. Haaland', rarity: 'DIAMOND_COMMON' as const, overall: 90, nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png', club: 'MCI', clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png' },
+        ].map((card, index) => (
+          <div className="player-org-grid-card" key={card.name}>
             <div className="player-org-grid-select">
               <Checkbox label="" defaultChecked={index === 0} />
             </div>
-            <CardFrame rarity={index === 0 ? 'elite' : index === 1 ? 'gold' : 'special'} overall={95 - index} position="ST" playerName={name.toUpperCase()} nationFlag="🇦🇷" clubCode="FC" />
+            <CardFrame
+              rarity={card.rarity}
+              overall={card.overall}
+              position="ST"
+              playerName={card.name.toUpperCase()}
+              nationImageSrc={card.nationImageSrc}
+              clubCode={card.club}
+              clubImageSrc={card.clubImageSrc}
+            />
           </div>
         ))}
       </div>
@@ -205,19 +228,20 @@ export function MarketPackCatalog() {
   return (
     <GridShell title="MarketPackCatalog" description="Pack catalog should sell efficiently and keep details one click away.">
       <div className="player-org-market-row">
-        {['Elite Pack', 'Best Value Pack', 'Limited Pack'].map((name, index) => (
-          <div className="player-org-market-card" key={name}>
+        {PACK_THEMES.map((pack, index) => (
+          <div className="player-org-market-card" key={pack.key}>
+            <PackArtwork theme={pack} compact />
             <div className="player-org-market-card-top">
               <div>
-                <SectionTitle as="h3">{name}</SectionTitle>
-                <PriceText>{(index + 1) * 60000}</PriceText>
+                <SectionTitle as="h3">{pack.name}</SectionTitle>
+                <PriceText>{pack.price.toLocaleString('en-US')}</PriceText>
               </div>
-              {index === 2 ? <HotBadge>Limited</HotBadge> : <HotBadge>Best Value</HotBadge>}
+              {index >= 14 ? <HotBadge>Elite</HotBadge> : index === 0 ? <HotBadge>Free</HotBadge> : <HotBadge>Store</HotBadge>}
             </div>
             <PackMetaBlock
-              price={(index + 1) * 60000}
-              cardCount={index + 2}
-              oddsTeaser="Special flare and higher OVR ceiling"
+              price={pack.price}
+              cardCount={pack.cardCount}
+              oddsTeaser={pack.oddsTeaser}
             />
             <PackActionCluster />
           </div>
@@ -228,18 +252,20 @@ export function MarketPackCatalog() {
 }
 
 export function PackDetailPanel() {
+  const pack = PACK_THEMES.find((item) => item.key === 'ultimate-pack') ?? PACK_THEMES[15]
+
   return (
     <section className="player-org-detail-panel" role="region" aria-labelledby="pack-detail-title">
       <BackButton />
       <div className="player-org-detail-layout">
-        <CardFrame rarity="special" overall={94} position="PK" playerName="ELITE PACK" nationFlag="🏁" clubCode="PK" />
+        <PackArtwork theme={pack} />
         <div className="player-org-shelf">
           <div id="pack-detail-title">
             <LabelText>PackDetailPanel</LabelText>
-            <SectionTitle as="h2">Elite Pack Detail</SectionTitle>
+            <SectionTitle as="h2">{pack.name} Detail</SectionTitle>
             <BodyText>Full pack detail lives in a slide-over and should make buy/open decisions easy.</BodyText>
           </div>
-          <PackMetaBlock price={120000} cardCount={3} oddsTeaser="Guaranteed 1 Gold+ with boosted Special chance." />
+          <PackMetaBlock price={pack.price} cardCount={pack.cardCount} oddsTeaser={pack.oddsTeaser} />
           <PackPurchaseChoice value="open-now" />
           <PackActionCluster />
         </div>
@@ -253,7 +279,17 @@ export function CardDetailPanel() {
     <section className="player-org-detail-panel" role="region" aria-labelledby="card-detail-title">
       <BackButton />
       <div className="player-org-detail-layout">
-        <CardFrame rarity="elite" overall={97} position="RW" playerName="LIONEL MESSI" nationFlag="🇦🇷" clubCode="MIA" />
+        <CardFrame
+          rarity="DIAMOND_RARE"
+          overall={91}
+          position="ST"
+          playerName="K. MBAPPÉ"
+          nationImageSrc="https://cdn.futbin.com/content/fifa24/img/nation/18.png"
+          clubCode="RMA"
+          clubImageSrc="https://cdn.futbin.com/content/fifa24/img/clubs/243.png"
+          imageSrc="https://cdn.sofifa.net/players/231/747/26_120.png"
+          stats={{ pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 }}
+        />
         <div className="player-org-shelf">
           <div id="card-detail-title">
             <LabelText>CardDetailPanel</LabelText>

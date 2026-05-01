@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { PrimaryButton } from '../atoms/Controls'
+import { Eye, EyeOff } from 'lucide-react'
+import { GoldCTAButton, PrimaryButton } from '../atoms/Controls'
 import './styles/auth.css'
 
 type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -80,7 +81,7 @@ export function PasswordField({
           onClick={() => setVisible((value) => !value)}
           aria-label={visible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
         >
-          {visible ? 'Ẩn' : 'Hiện'}
+          {visible ? <EyeOff size={18} strokeWidth={2.2} /> : <Eye size={18} strokeWidth={2.2} />}
         </button>
       </span>
       {hint || error ? (
@@ -103,6 +104,7 @@ type AuthFormFooterProps = {
   secondaryHref: string
   secondaryPrefix?: string
   disabled?: boolean
+  submitTone?: 'blue' | 'gold'
   children?: ReactNode
 }
 
@@ -112,13 +114,16 @@ export function AuthFormFooter({
   secondaryHref,
   secondaryPrefix,
   disabled,
+  submitTone = 'blue',
   children,
 }: AuthFormFooterProps) {
+  const SubmitButton = submitTone === 'gold' ? GoldCTAButton : PrimaryButton
+
   return (
     <div className="auth-form-footer">
-      <PrimaryButton type="submit" disabled={disabled}>
+      <SubmitButton type="submit" disabled={disabled}>
         {submitLabel}
-      </PrimaryButton>
+      </SubmitButton>
       <p className="auth-form-link">
         {secondaryPrefix ? `${secondaryPrefix} ` : null}
         <a href={secondaryHref}>{secondaryLabel}</a>

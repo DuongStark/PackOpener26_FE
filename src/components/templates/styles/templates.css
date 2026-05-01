@@ -25,16 +25,18 @@
 }
 
 .template-auth-spotlight {
-  min-height: 100vh;
-  padding: 32px 0;
+  position: relative;
+  z-index: 3;
+  min-height: calc(100vh - 112px);
+  padding: 12px 0 0;
 }
 
 .template-auth-spotlight-shell {
   width: min(1240px, calc(100% - 32px));
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 132px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(400px, 480px) 1fr;
+  grid-template-columns: minmax(420px, 480px) minmax(0, 1fr);
   gap: 24px;
   align-items: stretch;
 }
@@ -204,6 +206,7 @@
 @media (max-width: 980px) {
   .template-auth-spotlight-shell {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 }
 

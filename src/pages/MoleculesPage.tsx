@@ -85,7 +85,7 @@ export default function MoleculesPage() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              hint="Dùng email hợp lệ để nhận 1000 coins khi đăng ký."
+              hint="Dùng email hợp lệ để nhận 300 coins khi đăng ký."
               placeholder="you@example.com"
             />
             <FormField
@@ -167,7 +167,7 @@ export default function MoleculesPage() {
           <LabelText>RewardPill</LabelText>
           <SectionTitle as="h2">Progress Feedback</SectionTitle>
           <RewardPill
-            badge={<NewBadge>+1000</NewBadge>}
+            badge={<NewBadge>+300</NewBadge>}
             supportingText="Free starter coins credited after registration."
           />
           <BalanceChangeToast

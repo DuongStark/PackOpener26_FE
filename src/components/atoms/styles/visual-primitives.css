@@ -130,21 +130,26 @@
 
 .visual-card-frame-meta .visual-flag-icon,
 .visual-card-frame-meta .visual-club-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   backdrop-filter: none;
   min-width: unset;
-  height: auto;
   padding: 0;
 }
 
 .visual-card-frame-meta .visual-flag-icon {
-  font-size: 1.15rem;
+  width: 24px;
+  height: 16px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 }
 
 .visual-card-frame-meta .visual-club-badge {
-  font-size: 0.75rem;
+  width: 24px;
+  height: 24px;
+  font-size: 0.65rem;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
@@ -287,6 +292,14 @@
   background: transparent;
   box-shadow: none;
   padding: 0;
+}
+
+.visual-flag-icon img,
+.visual-club-badge img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .visual-club-badge {
