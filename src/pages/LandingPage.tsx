@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingBag, Package, DollarSign, MessageCircle } from "lucide-react";
 import { CardFrame } from "../components";
-import playerImage from "../assets/26_120.png";
+
 import "./styles/landing-page.css";
 
 const HexagonLogo = () => (
@@ -272,45 +272,6 @@ function PromoBanner() {
   );
 }
 
-const rarityItems = [
-  { name: 'Bronze Common', label: 'BRONZE COMMON', class: 'rarity-card-bronze', badge: 'rarity-badge-bronze-common', icon: '🥉' },
-  { name: 'Bronze Rare', label: 'BRONZE RARE', class: 'rarity-card-bronze', badge: 'rarity-badge-bronze-rare', icon: '🥉' },
-  { name: 'Silver Common', label: 'SILVER COMMON', class: 'rarity-card-silver', badge: 'rarity-badge-silver-common', icon: '🥈' },
-  { name: 'Silver Rare', label: 'SILVER RARE', class: 'rarity-card-silver', badge: 'rarity-badge-silver-rare', icon: '🥈' },
-  { name: 'Gold Common', label: 'GOLD COMMON', class: 'rarity-card-gold', badge: 'rarity-badge-gold-common', icon: '🥇' },
-  { name: 'Gold Rare', label: 'GOLD RARE', class: 'rarity-card-gold', badge: 'rarity-badge-gold-rare', icon: '🥇' },
-  { name: 'Gold Epic', label: 'GOLD EPIC', class: 'rarity-card-epic', badge: 'rarity-badge-gold-epic', icon: '⭐' },
-  { name: 'Diamond', label: 'DIAMOND', class: 'rarity-card-diamond', badge: 'rarity-badge-diamond', icon: '💎' },
-];
-
-function RarityRow() {
-  return (
-    <div className="rarity-row">
-      {rarityItems.map((item, i) => (
-        <motion.div
-          key={item.name}
-          className={`rarity-card ${item.class}`}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ delay: i * 0.07, duration: 0.4 }}
-        >
-          <div className="rarity-card-preview" style={{ 
-            background: item.class.includes('diamond') ? 'linear-gradient(135deg, #1e3a5f, #0a1628)' :
-                       item.class.includes('gold') ? 'linear-gradient(135deg, #3d2a00, #1a1200)' :
-                       item.class.includes('silver') ? 'linear-gradient(135deg, #2a2a2a, #1a1a1a)' :
-                       'linear-gradient(135deg, #2a1a0a, #1a1000)'
-          }}>
-            {item.icon}
-          </div>
-          <span className={`rarity-card-badge ${item.badge}`}>{item.label}</span>
-          <span className="rarity-card-name">{item.name}</span>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
 const steps = [
   { num: '01', title: 'Đăng Ký', desc: 'Tạo tài khoản miễn phí', icon: UserPlus },
   { num: '02', title: 'Mua Gói', desc: 'Chọn pack phù hợp', icon: ShoppingBag },
@@ -373,52 +334,6 @@ function SocialProofMarquee() {
         </div>
       </div>
     </section>
-  );
-}
-
-const featuredPlayers = [
-  { name: 'BELLINGHAM', position: 'CAM', rating: 91, rarity: 'diamond', stats: { pac: 78, sho: 88, pas: 87, dri: 90, def: 60, phy: 77 } },
-  { name: 'HAALAND', position: 'ST', rating: 91, rarity: 'gold', stats: { pac: 82, sho: 94, pas: 65, dri: 80, def: 35, phy: 92 } },
-  { name: 'VINICIUS', position: 'LW', rating: 89, rarity: 'gold', stats: { pac: 90, sho: 85, pas: 80, dri: 92, def: 45, phy: 68 } },
-];
-
-function FeaturedCards() {
-  return (
-    <div className="featured-carousel">
-      {featuredPlayers.map((player, i) => (
-        <motion.div
-          key={player.name}
-          className="featured-card"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ delay: i * 0.15, duration: 0.5 }}
-        >
-          <div className={`featured-card-backdrop featured-card-backdrop-${player.rarity}`} />
-          <div className="featured-card-inner">
-            <span className="featured-card-position">{player.position}</span>
-            <div className="featured-card-image-container">
-              <img className="featured-card-image" src={playerImage} alt={player.name} />
-            </div>
-            <span className="featured-card-rating">{player.rating}</span>
-            <h4 className="featured-card-name">{player.name}</h4>
-            <div className="featured-card-stats">
-              {Object.entries(player.stats).map(([stat, value]) => (
-                <div key={stat} className="stat-row">
-                  <span className="stat-label">{stat}</span>
-                  <div className="stat-bar-bg">
-                    <div 
-                      className={`stat-bar-fill ${player.rarity}`}
-                      style={{ '--stat-value': `${value}%` } as React.CSSProperties}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
   );
 }
 
@@ -529,20 +444,23 @@ export default function LandingPage() {
             </div>
             
             <div className="landing-scroll-block landing-page-band landing-page-band-rarity" id="rarity">
+              <h2 className="section-title">Hệ Tầng Thẻ</h2>
+              <p className="section-desc">Hiểu rõ thang bậc thẻ trước khi chốt pack</p>
               <RarityShowcaseSection />
-              <RarityRow />
             </div>
             
             <div className="landing-scroll-block landing-page-band landing-page-band-how" id="how-it-works">
-              <HowItWorksSection />
+              <h2 className="section-title">Cách Chơi</h2>
+              <p className="section-desc">4 bước để bắt đầu hành trình</p>
               <HowToSteps />
             </div>
             
             <SocialProofMarquee />
             
             <div className="landing-scroll-block landing-page-band landing-page-band-featured" id="featured-cards">
+              <h2 className="section-title">Thẻ Nổi Bật</h2>
+              <p className="section-desc">Cho người chơi thấy rõ phần thưởng xứng đáng để đăng ký</p>
               <FeaturedCardsCarousel />
-              <FeaturedCards />
             </div>
             
             <CTASection />
@@ -558,7 +476,7 @@ export default function LandingPage() {
   );
 }
 
-import { RarityShowcaseSection, HowItWorksSection, FeaturedCardsCarousel } from "../components";
+import { RarityShowcaseSection, FeaturedCardsCarousel } from "../components";
 
 function PublicMarketingTemplate({ hero, sections, footer }: { hero: React.ReactNode; sections: React.ReactNode; footer: React.ReactNode }) {
   return (

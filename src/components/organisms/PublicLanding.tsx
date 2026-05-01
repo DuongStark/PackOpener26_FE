@@ -162,11 +162,7 @@ export function RarityShowcaseSection() {
   const marqueeItems = [...items, ...items];
 
   return (
-    <SectionShell
-      eyebrow="Hệ Tầng Thẻ"
-      title="Hiểu Rõ Thang Bậc Thẻ Trước Khi Chốt Pack"
-      description="Hệ rarity thật của game phải được nhận ra ngay ở một cái nhìn: cùng layout thẻ, nhưng chất liệu, độ hiếm và cảm giác phần thưởng tăng dần rất rõ."
-    >
+    <SectionShell>
       <div
         className="public-landing-rarity-marquee"
         aria-label="Rarity showcase"
@@ -278,11 +274,7 @@ export function FeaturedCardsCarousel() {
   ];
 
   return (
-    <SectionShell
-      eyebrow="Thẻ Nổi Bật"
-      title="Cho Người Chơi Thấy Rõ Phần Thưởng Xứng Đáng Để Đăng Ký"
-      description="Các thẻ spotlight phải đủ sức kích thích để người vào lần đầu muốn đăng ký ngay để bắt đầu săn pack."
-    >
+    <SectionShell>
       <div className="public-landing-carousel">
         {cards.map((card) => (
           <div className="public-landing-feature-card" key={card.name}>
