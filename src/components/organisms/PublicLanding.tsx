@@ -242,28 +242,34 @@ export function HowItWorksSection() {
 export function FeaturedCardsCarousel() {
   const cards = [
     {
-      name: "Jude Bellingham",
+      name: "K. MBAPPÉ",
       rarity: "DIAMOND_RARE" as const,
-      overall: 96,
-      position: "CM",
-      nation: "🏴",
-      club: "RMA",
-    },
-    {
-      name: "Erling Haaland",
-      rarity: "GOLD_RARE" as const,
-      overall: 94,
+      overall: 97,
       position: "ST",
-      nation: "🇳🇴",
-      club: "MCI",
+      nation: "🇫🇷",
+      club: "PSG",
+      imageSrc: "https://cdn.sofifa.net/players/231/747/24_120.png",
+      stats: { pac: 97, sho: 90, pas: 80, dri: 92, def: 36, phy: 78 }
     },
     {
-      name: "Vinicius Jr",
+      name: "LIONEL MESSI",
+      rarity: "DIAMOND_COMMON" as const,
+      overall: 94,
+      position: "RW",
+      nation: "🇦🇷",
+      club: "MIA",
+      imageSrc: "https://cdn.sofifa.net/players/158/023/24_120.png",
+      stats: { pac: 80, sho: 87, pas: 90, dri: 94, def: 33, phy: 64 }
+    },
+    {
+      name: "K. DE BRUYNE",
       rarity: "GOLD_EPIC" as const,
-      overall: 95,
-      position: "LW",
-      nation: "🇧🇷",
-      club: "RMA",
+      overall: 93,
+      position: "CM",
+      nation: "🇧🇪",
+      club: "MCI",
+      imageSrc: "https://cdn.sofifa.net/players/192/985/24_120.png",
+      stats: { pac: 72, sho: 85, pas: 94, dri: 87, def: 65, phy: 78 }
     },
   ];
 
@@ -279,6 +285,8 @@ export function FeaturedCardsCarousel() {
               playerName={card.name.toUpperCase()}
               nationFlag={card.nation}
               clubCode={card.club}
+              imageSrc={card.imageSrc}
+              stats={card.stats}
             />
           </div>
         ))}

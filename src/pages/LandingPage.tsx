@@ -144,7 +144,7 @@ function HeroSection() {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
 
   useEffect(() => {
-    const words = ['MỞ PACK', '·', 'SĂN THẺ', '·', 'CHINH PHỤC GIẤC MƠ'];
+    const words = ['Mở pack', '·', 'Săn thẻ', '·', 'Chinh phục giấc mơ'];
     words.forEach((_, i) => {
       setTimeout(() => {
         setVisibleWords(prev => [...prev, i]);
@@ -152,7 +152,7 @@ function HeroSection() {
     });
   }, []);
 
-  const words = ['MỞ PACK', '·', 'SĂN THẺ', '·', 'CHINH PHỤC GIẤC MƠ'];
+  const words = ['Mở pack', '·', 'Săn thẻ', '·', 'Chinh phục giấc mơ'];
 
   return (
     <section className="hero-section">
@@ -168,7 +168,7 @@ function HeroSection() {
             {words.map((word, i) => (
               <span
                 key={i}
-                className={`hero-heading-word ${visibleWords.includes(i) ? 'visible' : ''} ${word === 'CHINH PHỤC GIẤC MƠ' ? 'highlight' : ''}`}
+                className={`hero-heading-word ${visibleWords.includes(i) ? 'visible' : ''} ${word === 'Chinh phục giấc mơ' ? 'highlight' : ''}`}
               >
                 {word}{' '}
               </span>
@@ -196,15 +196,44 @@ function HeroSection() {
         </div>
 
         <div className="hero-visual">
-          <div className="hero-card-wrapper">
-            <CardFrame
-              rarity="DIAMOND_RARE"
-              overall={91}
-              position="ST"
-              playerName="HAALAND"
-              nationFlag="🇳🇴"
-              clubCode="MCI"
-            />
+          <div className="hero-cards-cluster">
+            <div className="hero-card-secondary left">
+              <CardFrame
+                rarity="GOLD_EPIC"
+                overall={95}
+                position="LW"
+                playerName="VINICIUS"
+                nationFlag="🇧🇷"
+                clubCode="RMA"
+                imageSrc="https://cdn.sofifa.net/players/238/794/24_120.png"
+                stats={{ pac: 95, sho: 82, pas: 81, dri: 90, def: 29, phy: 68 }}
+              />
+            </div>
+            <div className="hero-card-primary">
+              <CardFrame
+                rarity="DIAMOND_RARE"
+                overall={91}
+                position="ST"
+                playerName="HAALAND"
+                nationFlag="🇳🇴"
+                clubCode="MCI"
+                glow={true}
+                imageSrc="https://cdn.sofifa.net/players/239/085/24_120.png"
+                stats={{ pac: 89, sho: 93, pas: 66, dri: 80, def: 45, phy: 88 }}
+              />
+            </div>
+            <div className="hero-card-secondary right">
+              <CardFrame
+                rarity="GOLD_RARE"
+                overall={96}
+                position="CM"
+                playerName="BELLINGHAM"
+                nationFlag="🏴"
+                clubCode="RMA"
+                imageSrc="https://cdn.sofifa.net/players/252/371/24_120.png"
+                stats={{ pac: 82, sho: 84, pas: 83, dri: 88, def: 78, phy: 82 }}
+              />
+            </div>
           </div>
         </div>
       </div>

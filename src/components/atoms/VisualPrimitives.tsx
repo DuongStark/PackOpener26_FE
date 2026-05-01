@@ -173,6 +173,8 @@ type CardFrameProps = HTMLAttributes<HTMLDivElement> & {
   nationFlag?: string
   clubCode?: string
   glow?: boolean
+  imageSrc?: string
+  stats?: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number }
 }
 
 type CardTheme = {
@@ -350,6 +352,8 @@ export function CardFrame({
   nationFlag = '🇬🇪',
   clubCode = 'PSG',
   glow = false,
+  imageSrc,
+  stats = { pac: 80, sho: 80, pas: 80, dri: 80, def: 80, phy: 80 }, // Fallback
   ...props
 }: CardFrameProps) {
   const resolvedRarity = resolveCardRarity(rarity)
@@ -391,27 +395,35 @@ export function CardFrame({
         </div>
 
         <div className="visual-card-frame-art">
-          <div className="visual-card-frame-silhouette" />
+          {/* Dùng ảnh từ prop truyền vào, fallback là Haaland */}
+          <img 
+            src={imageSrc || "https://cdn.sofifa.net/players/239/085/24_120.png"} 
+            alt={playerName} 
+            className="visual-card-player-image" 
+            referrerPolicy="no-referrer"
+          />
         </div>
 
-        <div className="visual-card-frame-name">
-          <PlayerNameText>{playerName}</PlayerNameText>
-        </div>
+        <div className="visual-card-frame-bottom">
+          <div className="visual-card-frame-name">
+            <PlayerNameText>{playerName}</PlayerNameText>
+          </div>
 
-        <div className="visual-card-frame-stats">
-          {[
-            ['91', 'PAC'],
-            ['88', 'SHO'],
-            ['84', 'PAS'],
-            ['90', 'DRI'],
-            ['52', 'DEF'],
-            ['76', 'PHY'],
-          ].map(([value, label]) => (
-            <div className="visual-card-frame-stat" key={label}>
-              <StatNumber>{value}</StatNumber>
-              <LabelText>{label}</LabelText>
-            </div>
-          ))}
+          <div className="visual-card-frame-stats-grid">
+            {[
+              [stats.pac, 'PAC'],
+              [stats.sho, 'SHO'],
+              [stats.pas, 'PAS'],
+              [stats.dri, 'DRI'],
+              [stats.def, 'DEF'],
+              [stats.phy, 'PHY'],
+            ].map(([value, label]) => (
+              <div className="visual-card-frame-stat" key={label as string}>
+                <StatNumber>{value}</StatNumber>
+                <LabelText>{label}</LabelText>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

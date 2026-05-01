@@ -347,8 +347,8 @@
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em; /* Tighten spacing cho sentence case */
+  text-transform: none; /* Bỏ uppercase ép buộc */
 }
 
 .hero-heading-word {
@@ -362,11 +362,10 @@
 }
 
 .hero-heading-word.highlight {
-  color: transparent;
-  background: linear-gradient(90deg, var(--rarity-gold) 0%, #fb923c 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  text-shadow: 0 0 40px rgba(255,215,0,0.4);
+  color: #F8FAFC; /* Off-white, tinh tế hơn */
+  background: none;
+  -webkit-text-fill-color: initial;
+  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
 @keyframes fadeUp {
@@ -485,87 +484,77 @@
   background: transparent !important;
 }
 
-.hero-card-wrapper {
+.hero-cards-cluster {
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 280px;
-  height: 400px;
+  align-items: center;
+  width: 100%;
+  height: 550px;
+}
+
+/* Cho phép thẻ nở ra đầy khung mới */
+.hero-cards-cluster .visual-card-frame {
+  width: 100%;
+  max-width: none;
+}
+
+.hero-card-primary {
+  position: relative;
+  z-index: 10;
+  width: 300px; /* Thẻ chính to hơn 1 chút (trước là 280 max 220) */
   animation: heroFloat 4s ease-in-out infinite;
   transform-style: preserve-3d;
-  will-change: transform;
+  filter: drop-shadow(0 0 40px rgba(96, 165, 250, 0.2));
+}
+
+.hero-card-secondary {
+  position: absolute;
+  z-index: 5;
+  width: 240px; /* Thẻ phụ đằng sau nhỏ hơn */
+  opacity: 0.85;
+  filter: blur(2px) brightness(0.5) drop-shadow(0 0 20px rgba(0,0,0,0.5));
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hero-card-secondary.left {
+  left: -40px;
+  transform: rotate(-15deg) scale(0.9);
+  animation: heroFloatLeft 5s ease-in-out infinite;
+}
+
+.hero-card-secondary.right {
+  right: -40px;
+  transform: rotate(15deg) scale(0.9);
+  animation: heroFloatRight 4.5s ease-in-out infinite;
+}
+
+/* Hiệu ứng xòe bài khi hover vào cụm thẻ */
+.hero-cards-cluster:hover .hero-card-secondary.left {
+  transform: rotate(-25deg) scale(0.95) translateX(-60px);
+  filter: blur(0px) brightness(0.9) drop-shadow(0 0 30px rgba(245, 158, 11, 0.3));
+  opacity: 1;
+}
+
+.hero-cards-cluster:hover .hero-card-secondary.right {
+  transform: rotate(25deg) scale(0.95) translateX(60px);
+  filter: blur(0px) brightness(0.9) drop-shadow(0 0 30px rgba(251, 191, 36, 0.3));
+  opacity: 1;
 }
 
 @keyframes heroFloat {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(0.5deg); }
+  50% { transform: translateY(-12px) rotate(0.5deg); }
 }
 
-.hero-card-frame {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-  background: transparent !important;
-  backdrop-filter: none !important;
+@keyframes heroFloatLeft {
+  0%, 100% { margin-top: 0px; }
+  50% { margin-top: -15px; }
 }
 
-.hero-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: 
-    drop-shadow(0 0 15px rgba(96, 165, 250, 0.7))
-    drop-shadow(0 0 30px rgba(96, 165, 250, 0.5))
-    drop-shadow(0 0 50px rgba(96, 165, 250, 0.3));
-  animation: glowPulse 3s ease-in-out infinite;
-}
-
-.hero-card-info {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  z-index: 10;
-}
-
-.hero-card-rating {
-  font-family: var(--font-stat);
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #FFD700;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.5);
-}
-
-.hero-card-position {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
-
-.hero-card-name {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+@keyframes heroFloatRight {
+  0%, 100% { margin-top: 0px; }
+  50% { margin-top: -12px; }
 }
 
 @keyframes glowPulse {
