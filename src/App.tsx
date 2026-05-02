@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import AtomsPage from './pages/AtomsPage'
+import CardInventoryPage from './pages/CardInventoryPage'
+import HomePage from './pages/HomePage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
+import MarketPage from './pages/MarketPage'
 import MoleculesPage from './pages/MoleculesPage'
 import OrganismsPage from './pages/OrganismsPage'
+import PackInventoryPage from './pages/PackInventoryPage'
 import RegisterPage from './pages/RegisterPage'
 import TemplatesPage from './pages/TemplatesPage'
 
@@ -68,6 +72,22 @@ function App() {
 
   if (path === '/register') {
     return <RegisterPage />
+  }
+
+  if (path === '/home') {
+    return <HomePage />
+  }
+
+  if (path === '/packs') {
+    return <PackInventoryPage />
+  }
+
+  if (path === '/cards') {
+    return <CardInventoryPage />
+  }
+
+  if (path === '/market') {
+    return <MarketPage />
   }
 
   if (path === '/organisms') {

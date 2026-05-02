@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Coins, ShieldCheck, Sparkles, Trophy } from 'lucide-react'
 import { AuthFormFooter, FormField, PasswordField, RewardPill } from '..'
+import { loginWithPassword, persistAuthSession, registerWithPassword } from '../../services/authApi'
 import {
   BodyText,
   CaptionText,
@@ -19,22 +20,62 @@ type AuthSubmitResult = {
   message: string
 }
 
-async function submitLogin(): Promise<AuthSubmitResult> {
-  await new Promise((resolve) => window.setTimeout(resolve, 700))
+async function submitLogin(payload: { email: string; password: string; remember: boolean }): Promise<AuthSubmitResult> {
+  const session = await loginWithPassword({ email: payload.email, password: payload.password })
+  persistAuthSession(session, payload.remember)
 
   return {
     ok: true,
-    message: 'Thông tin đã hợp lệ. Bước tiếp theo là nối API đăng nhập thật.',
+    message: `Đăng nhập thành công. Chào mừng ${session.user.username} quay lại.`,
   }
 }
 
-async function submitRegister(): Promise<AuthSubmitResult> {
-  await new Promise((resolve) => window.setTimeout(resolve, 800))
+async function submitRegister(payload: { email: string; username: string; password: string }): Promise<AuthSubmitResult> {
+  const session = await registerWithPassword(payload)
+  persistAuthSession(session, true)
 
   return {
     ok: true,
-    message: 'Tài khoản có thể được tạo. Bước tiếp theo là nối API đăng ký thật.',
+    message: `Tạo tài khoản thành công. ${session.user.username} đã sẵn sàng mở pack.`,
   }
+}
+
+function getPasswordStrength(password: string) {
+  const checks = [
+    password.length >= 6,
+    /[A-Z]/.test(password) && /[a-z]/.test(password),
+    /\d/.test(password),
+    /[^A-Za-z0-9]/.test(password) || password.length >= 10,
+  ]
+  const score = Math.max(1, checks.filter(Boolean).length)
+  const labels = ['Yếu', 'Yếu', 'Trung bình', 'Mạnh', 'Rất mạnh']
+
+  return {
+    score,
+    label: labels[score],
+  }
+}
+
+function PasswordStrengthMeter({ password }: { password: string }) {
+  if (!password) {
+    return null
+  }
+
+  const strength = getPasswordStrength(password)
+
+  return (
+    <div className={`auth-password-strength auth-password-strength-${strength.score}`} aria-live="polite">
+      <div className="auth-password-strength-meta">
+        <span>Độ mạnh mật khẩu</span>
+        <strong>{strength.label}</strong>
+      </div>
+      <div className="auth-password-strength-track" aria-hidden="true">
+        {[1, 2, 3, 4].map((level) => (
+          <span key={level} className={level <= strength.score ? 'active' : undefined} />
+        ))}
+      </div>
+    </div>
+  )
 }
 
 const featureCopy = {
@@ -121,8 +162,10 @@ export function AuthFeaturePanel({ mode = 'login' }: { mode?: AuthMode }) {
 export function LoginFormPanel() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [remember, setRemember] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('')
   const [emailTouched, setEmailTouched] = useState(false)
   const [passwordTouched, setPasswordTouched] = useState(false)
 
@@ -140,6 +183,7 @@ export function LoginFormPanel() {
     setEmailTouched(true)
     setPasswordTouched(true)
     setSubmitMessage('')
+    setSubmitStatus('')
 
     if (!email || !email.includes('@') || !password) {
       return
@@ -147,10 +191,16 @@ export function LoginFormPanel() {
 
     setIsSubmitting(true)
 
-    const result = await submitLogin()
-
-    setIsSubmitting(false)
-    setSubmitMessage(result.message)
+    try {
+      const result = await submitLogin({ email: email.trim(), password, remember })
+      setSubmitStatus(result.ok ? 'success' : 'error')
+      setSubmitMessage(result.message)
+    } catch (error) {
+      setSubmitStatus('error')
+      setSubmitMessage(error instanceof Error ? error.message : 'Đăng nhập thất bại.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -170,6 +220,7 @@ export function LoginFormPanel() {
         />
         <PasswordField
           label="Mật khẩu"
+          labelAccessory={<a href="/forgot-password">Quên mật khẩu?</a>}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           onBlur={() => setPasswordTouched(true)}
@@ -183,8 +234,21 @@ export function LoginFormPanel() {
           secondaryHref="/register"
           disabled={isSubmitting}
           submitTone="blue"
-        />
-        {submitMessage ? <p className="auth-organisms-submit-note">{submitMessage}</p> : null}
+        >
+          <label className="auth-remember-choice">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(event) => setRemember(event.target.checked)}
+            />
+            <span>Ghi nhớ trong 30 ngày</span>
+          </label>
+        </AuthFormFooter>
+        {submitMessage ? (
+          <p className={`auth-organisms-submit-note auth-organisms-submit-note-${submitStatus}`}>
+            {submitMessage}
+          </p>
+        ) : null}
       </form>
     </section>
   )
@@ -194,11 +258,14 @@ export function RegisterFormPanel() {
   const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | ''>('')
   const [emailTouched, setEmailTouched] = useState(false)
   const [usernameTouched, setUsernameTouched] = useState(false)
   const [passwordTouched, setPasswordTouched] = useState(false)
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false)
 
   const emailError =
     emailTouched && email.trim().length === 0
@@ -209,27 +276,50 @@ export function RegisterFormPanel() {
   const usernameError =
     usernameTouched && username.trim().length < 6
       ? 'Tên người chơi phải có ít nhất 6 ký tự.'
+      : usernameTouched && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(username.trim())
+        ? 'Tên người chơi 6-20 ký tự, gồm chữ và số.'
       : undefined
   const passwordError =
     passwordTouched && password.length < 6 ? 'Mật khẩu phải có ít nhất 6 ký tự.' : undefined
+  const confirmPasswordError =
+    confirmPasswordTouched && confirmPassword.length === 0
+      ? 'Vui lòng xác nhận mật khẩu.'
+      : confirmPasswordTouched && confirmPassword !== password
+        ? 'Mật khẩu xác nhận chưa khớp.'
+        : undefined
+  const passwordsMatch = password.length > 0 && confirmPassword === password
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setEmailTouched(true)
     setUsernameTouched(true)
     setPasswordTouched(true)
+    setConfirmPasswordTouched(true)
     setSubmitMessage('')
+    setSubmitStatus('')
 
-    if (!email || !email.includes('@') || username.trim().length < 6 || password.length < 6) {
+    if (
+      !email ||
+      !email.includes('@') ||
+      !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(username.trim()) ||
+      password.length < 6 ||
+      confirmPassword !== password
+    ) {
       return
     }
 
     setIsSubmitting(true)
 
-    const result = await submitRegister()
-
-    setIsSubmitting(false)
-    setSubmitMessage(result.message)
+    try {
+      const result = await submitRegister({ email: email.trim(), username: username.trim(), password })
+      setSubmitStatus(result.ok ? 'success' : 'error')
+      setSubmitMessage(result.message)
+    } catch (error) {
+      setSubmitStatus('error')
+      setSubmitMessage(error instanceof Error ? error.message : 'Đăng ký thất bại.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -268,6 +358,16 @@ export function RegisterFormPanel() {
           hint={password.length >= 6 ? 'Tối thiểu 6 ký tự.' : undefined}
           placeholder="••••••••"
         />
+        <PasswordStrengthMeter password={password} />
+        <PasswordField
+          label="Xác nhận mật khẩu"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          onBlur={() => setConfirmPasswordTouched(true)}
+          error={confirmPasswordError}
+          success={passwordsMatch}
+          placeholder="••••••••"
+        />
         <AuthFormFooter
           submitLabel={isSubmitting ? 'Đang Tạo...' : 'Tạo Tài Khoản'}
           secondaryPrefix="Đã có tài khoản?"
@@ -276,7 +376,11 @@ export function RegisterFormPanel() {
           disabled={isSubmitting}
           submitTone="gold"
         />
-        {submitMessage ? <p className="auth-organisms-submit-note">{submitMessage}</p> : null}
+        {submitMessage ? (
+          <p className={`auth-organisms-submit-note auth-organisms-submit-note-${submitStatus}`}>
+            {submitMessage}
+          </p>
+        ) : null}
       </form>
     </section>
   )
