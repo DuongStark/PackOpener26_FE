@@ -64,6 +64,8 @@ const topPulls = [
     nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png',
     clubCode: 'RMA',
     clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png',
+    imageSrc: 'https://cdn.sofifa.net/players/231/747/26_120.png',
+    stats: { pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 },
   },
   {
     name: 'K. KVARATSKHELIA',
@@ -73,6 +75,8 @@ const topPulls = [
     nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png',
     clubCode: 'PSG',
     clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png',
+    imageSrc: 'https://cdn.sofifa.net/players/247/635/26_120.png',
+    stats: { pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 },
   },
   {
     name: 'E. HAALAND',
@@ -82,6 +86,8 @@ const topPulls = [
     nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png',
     clubCode: 'MCI',
     clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png',
+    imageSrc: 'https://cdn.sofifa.net/players/239/085/26_120.png',
+    stats: { pac: 86, sho: 91, pas: 70, dri: 80, def: 45, phy: 88 },
   },
 ]
 
@@ -259,7 +265,7 @@ export default function HomePage() {
             {topPulls.map((card, index) => (
               <article className="home-player-card" key={card.name}>
                 <div className="home-player-card-rank">#{index + 1}</div>
-                <CardFrame {...card} glow={index === 0} />
+                <CardFrame {...card} />
                 <RarityChip rarity={card.rarity}>{card.rarity.replace(/_/g, ' ')}</RarityChip>
               </article>
             ))}

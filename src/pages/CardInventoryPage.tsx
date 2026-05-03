@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import type { CSSProperties, UIEvent } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import type { CSSProperties, PointerEvent, UIEvent } from 'react'
 import {
   ArrowLeft,
   CircleDollarSign,
@@ -9,6 +9,7 @@ import {
   Sparkles,
   Trophy,
   WalletCards,
+  X,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
 import {
@@ -151,14 +152,34 @@ function formatCoin(value: number) {
   return value.toLocaleString('vi-VN')
 }
 
+function InventoryCardFrame({ card, glow = false }: { card: InventoryCard; glow?: boolean }) {
+  return (
+    <CardFrame
+      rarity={card.rarity}
+      overall={card.overall}
+      position={card.position}
+      playerName={card.name}
+      clubCode={card.clubCode}
+      nationImageSrc={card.nationImageSrc}
+      clubImageSrc={card.clubImageSrc}
+      imageSrc={card.imageSrc}
+      stats={card.stats}
+      glow={glow}
+    />
+  )
+}
+
 export default function CardInventoryPage() {
   const [visibleCount, setVisibleCount] = useState(18)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
-  const [focusedId, setFocusedId] = useState('CARD-0001')
+  const [focusedId, setFocusedId] = useState<string | null>(null)
   const [isLeaving, setIsLeaving] = useState(false)
+  const previewTiltRef = useRef<HTMLDivElement | null>(null)
+  const previewTiltFrameRef = useRef<number | null>(null)
+  const previewTiltStateRef = useRef({ tiltX: '0deg', tiltY: '0deg' })
   const cards = useMemo(() => buildCards(), [])
   const visibleCards = cards.slice(0, visibleCount)
-  const focusedCard = cards.find((card) => card.id === focusedId) ?? cards[0]
+  const focusedCard = focusedId ? (cards.find((card) => card.id === focusedId) ?? null) : null
   const session = readAuthSession()
   const username = session?.user?.username ?? 'HLV'
   const balance = session?.user?.balance ?? 300
@@ -184,6 +205,46 @@ export default function CardInventoryPage() {
         next.add(id)
       }
       return next
+    })
+  }
+
+  const resetPreviewTilt = () => {
+    const node = previewTiltRef.current
+    if (!node) return
+
+    if (previewTiltFrameRef.current !== null) {
+      window.cancelAnimationFrame(previewTiltFrameRef.current)
+      previewTiltFrameRef.current = null
+    }
+
+    node.style.setProperty('--card-tilt-x', '0deg')
+    node.style.setProperty('--card-tilt-y', '0deg')
+    previewTiltStateRef.current = { tiltX: '0deg', tiltY: '0deg' }
+  }
+
+  const handlePreviewTiltMove = (event: PointerEvent<HTMLDivElement>) => {
+    const node = previewTiltRef.current
+    if (!node || event.pointerType === 'touch') return
+
+    const rect = node.getBoundingClientRect()
+    const relativeX = (event.clientX - rect.left) / rect.width
+    const relativeY = (event.clientY - rect.top) / rect.height
+    const clampedX = Math.min(1, Math.max(0, relativeX))
+    const clampedY = Math.min(1, Math.max(0, relativeY))
+    const tiltY = (clampedX - 0.5) * 24
+    const tiltX = (0.5 - clampedY) * 20
+    previewTiltStateRef.current = {
+      tiltX: `${tiltX.toFixed(2)}deg`,
+      tiltY: `${tiltY.toFixed(2)}deg`,
+    }
+
+    if (previewTiltFrameRef.current !== null) return
+
+    previewTiltFrameRef.current = window.requestAnimationFrame(() => {
+      const latestTilt = previewTiltStateRef.current
+      node.style.setProperty('--card-tilt-x', latestTilt.tiltX)
+      node.style.setProperty('--card-tilt-y', latestTilt.tiltY)
+      previewTiltFrameRef.current = null
     })
   }
 
@@ -222,36 +283,6 @@ export default function CardInventoryPage() {
             <Avatar initials={initials} size={38} />
           </div>
         </header>
-
-        <aside className="card-inventory-detail">
-          <div className="card-inventory-detail-copy">
-            <LabelText>Spotlight Card</LabelText>
-            <h2>{focusedCard.name}</h2>
-            <RarityChip rarity={focusedCard.rarity}>{focusedCard.rarity.replace(/_/g, ' ')}</RarityChip>
-          </div>
-
-          <div className="card-inventory-spotlight-card">
-            <CardFrame {...focusedCard} glow />
-          </div>
-
-          <div className="card-inventory-metrics">
-            <div>
-              <WalletCards size={18} />
-              <strong>{cards.length}</strong>
-              <span>Total cards</span>
-            </div>
-            <div>
-              <Gem size={18} />
-              <strong>18</strong>
-              <span>Rare+</span>
-            </div>
-            <div>
-              <Trophy size={18} />
-              <strong>{focusedCard.overall}</strong>
-              <span>Best OVR</span>
-            </div>
-          </div>
-        </aside>
 
         <section className="card-inventory-board">
           <div className="card-inventory-toolbar">
@@ -295,7 +326,7 @@ export default function CardInventoryPage() {
                     onClick={() => setFocusedId(card.id)}
                     aria-label={`Xem ${card.name}`}
                   >
-                    <CardFrame {...card} glow={index === 0} />
+                    <InventoryCardFrame card={card} glow={index === 0} />
                   </button>
 
                   <div className="card-inventory-item-meta">
@@ -334,6 +365,85 @@ export default function CardInventoryPage() {
           </div>
         </section>
       </section>
+
+      {focusedCard ? (
+        <section
+          className="card-preview-overlay"
+          aria-label={`Chi tiết thẻ ${focusedCard.name}`}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            className="card-preview-backdrop"
+            type="button"
+            onClick={() => setFocusedId(null)}
+            aria-label="Đóng chi tiết thẻ"
+          />
+
+          <div className="card-preview-panel">
+            <button
+              className="card-preview-close"
+              type="button"
+              onClick={() => setFocusedId(null)}
+              aria-label="Đóng chi tiết thẻ"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="card-preview-art">
+              <div
+                className="card-preview-tilt"
+                ref={previewTiltRef}
+                onPointerMove={handlePreviewTiltMove}
+                onPointerLeave={resetPreviewTilt}
+                onPointerCancel={resetPreviewTilt}
+              >
+                <InventoryCardFrame card={focusedCard} glow />
+              </div>
+            </div>
+
+            <div className="card-preview-copy">
+              <LabelText>Selected Card</LabelText>
+              <h2>{focusedCard.name}</h2>
+              <div className="card-preview-chips">
+                <RarityChip rarity={focusedCard.rarity}>{focusedCard.rarity.replace(/_/g, ' ')}</RarityChip>
+                {focusedCard.duplicateCount > 1 ? <HotBadge>x{focusedCard.duplicateCount}</HotBadge> : null}
+              </div>
+
+              <div className="card-preview-metrics">
+                <div>
+                  <Trophy size={18} />
+                  <strong>{focusedCard.overall}</strong>
+                  <span>OVR</span>
+                </div>
+                <div>
+                  <WalletCards size={18} />
+                  <strong>{focusedCard.position}</strong>
+                  <span>{focusedCard.clubCode}</span>
+                </div>
+                <div>
+                  <Gem size={18} />
+                  <PriceText>{focusedCard.sellPrice.toLocaleString('en-US')}</PriceText>
+                  <span>Sell value</span>
+                </div>
+              </div>
+
+              <div className="card-preview-sell-actions" aria-label="Tùy chọn bán thẻ">
+                <button type="button">
+                  <CircleDollarSign size={18} />
+                  Bán thẻ
+                  <PriceText>{focusedCard.sellPrice.toLocaleString('en-US')}</PriceText>
+                </button>
+                <button type="button" disabled={focusedCard.duplicateCount <= 1}>
+                  <ShieldAlert size={18} />
+                  Bán bản trùng
+                  <span>{focusedCard.duplicateCount > 1 ? `${focusedCard.duplicateCount - 1} thẻ` : 'Không có trùng'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   )
 }

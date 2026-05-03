@@ -405,21 +405,18 @@ function PackOpeningOverlay({
             {activeIsRare && rareStep === 0 ? (
               <span className="pack-opening-reveal-emblem">
                 <img src={activeCard.clubImageSrc} alt={`${activeCard.clubCode} badge`} referrerPolicy="no-referrer" />
-                <strong>{activeCard.clubCode}</strong>
               </span>
             ) : null}
 
             {activeIsRare && rareStep === 1 ? (
               <span className="pack-opening-reveal-emblem">
                 <img src={activeCard.nationImageSrc} alt={`${activeCard.name} nation`} referrerPolicy="no-referrer" />
-                <strong>Nation</strong>
               </span>
             ) : null}
 
             {activeIsRare && rareStep === 2 ? (
               <span className="pack-opening-reveal-position">
                 <strong>{activeCard.position}</strong>
-                <span>{activeCard.overall} OVR</span>
               </span>
             ) : null}
 
@@ -440,7 +437,7 @@ function PackOpeningOverlay({
 }
 
 export default function PackInventoryPage() {
-  const [visibleCount, setVisibleCount] = useState(14)
+  const [visibleCount, setVisibleCount] = useState(24)
   const [isLeaving, setIsLeaving] = useState(false)
   const [packs, setPacks] = useState<UserPack[]>(() => buildUserPacks())
   const [openingPack, setOpeningPack] = useState<UserPack | null>(null)
@@ -507,14 +504,14 @@ export default function PackInventoryPage() {
           </div>
         </header>
 
-        <aside className="pack-inventory-summary">
+        <section className="pack-inventory-summary" aria-label="Tổng quan kho pack">
           <div className="pack-inventory-spotlight">
+            <PackArtwork theme={PACK_THEMES.find((pack) => pack.key === 'ultimate-pack') ?? PACK_THEMES[15]} compact />
             <div className="pack-inventory-spotlight-copy">
-              <LabelText>Ready To Open</LabelText>
-              <h2>{pendingCount} pack đang chờ</h2>
-              <p>Danh sách cuộn bên trong kho, màn hình game bên ngoài vẫn đứng yên.</p>
+              <LabelText>Storage Overview</LabelText>
+              <h2>{packs.length} pack trong kho</h2>
+              <p>Grid kho ưu tiên mở nhanh, lọc trạng thái và nhìn được nhiều pack cùng lúc.</p>
             </div>
-            <PackArtwork theme={PACK_THEMES.find((pack) => pack.key === 'ultimate-pack') ?? PACK_THEMES[15]} />
           </div>
 
           <div className="pack-inventory-metrics">
@@ -534,7 +531,7 @@ export default function PackInventoryPage() {
               <span>Elite</span>
             </div>
           </div>
-        </aside>
+        </section>
 
         <section className="pack-inventory-board">
           <div className="pack-inventory-toolbar">
@@ -552,7 +549,10 @@ export default function PackInventoryPage() {
           <div className="pack-inventory-list" ref={listRef} onScroll={handleListScroll}>
             {visiblePacks.map((pack, index) => (
               <article className="pack-inventory-card" key={pack.id}>
-                <PackArtwork theme={pack.theme} compact />
+                <div className="pack-inventory-card-art">
+                  <PackArtwork theme={pack.theme} compact />
+                  {index < 3 ? <HotBadge>{index === 0 ? 'Next' : 'Fresh'}</HotBadge> : null}
+                </div>
                 <div className="pack-inventory-card-main">
                   <div className="pack-inventory-card-title">
                     <div>
@@ -574,7 +574,6 @@ export default function PackInventoryPage() {
                   </div>
                 </div>
                 <div className="pack-inventory-card-actions">
-                  {index < 3 ? <HotBadge>{index === 0 ? 'Next' : 'Fresh'}</HotBadge> : null}
                   <button
                     type="button"
                     disabled={pack.status === 'opened'}

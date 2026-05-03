@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Sparkles,
+  X,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
 import {
@@ -58,7 +59,7 @@ function marketBadge(index: number) {
 
 export default function MarketPage() {
   const [visibleCount, setVisibleCount] = useState(12)
-  const [selectedKey, setSelectedKey] = useState(PACK_THEMES[PACK_THEMES.length - 1].key)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [purchaseMode, setPurchaseMode] = useState<PurchaseMode>('send-inventory')
   const [isLeaving, setIsLeaving] = useState(false)
   const [receipt, setReceipt] = useState('')
@@ -68,7 +69,8 @@ export default function MarketPage() {
   const initials = username.slice(0, 2).toUpperCase()
   const packs = useMemo(() => PACK_THEMES, [])
   const visiblePacks = packs.slice(0, visibleCount)
-  const selectedPack = packs.find((pack) => pack.key === selectedKey) ?? packs[0]
+  const featuredPack = packs[packs.length - 1]
+  const selectedPack = selectedKey ? (packs.find((pack) => pack.key === selectedKey) ?? featuredPack) : featuredPack
   const canBuy = selectedPack.price <= balance
 
   const handleCatalogScroll = (event: UIEvent<HTMLDivElement>) => {
@@ -126,75 +128,42 @@ export default function MarketPage() {
           </div>
         </header>
 
-        <aside className="market-detail">
-          <div className="market-detail-copy">
-            <LabelText>Selected Pack</LabelText>
-            <h2>{selectedPack.name}</h2>
-            <p>{selectedPack.subtitle} · {selectedPack.oddsTeaser}</p>
+        <section className="market-featured">
+          <div className="market-featured-copy">
+            <HotBadge>Featured Deal</HotBadge>
+            <LabelText>Compare Before Buying</LabelText>
+            <h2>{featuredPack.name}</h2>
+            <p>{featuredPack.subtitle} · {featuredPack.oddsTeaser}</p>
+            <div className="market-featured-actions">
+              <button type="button" onClick={() => setSelectedKey(featuredPack.key)}>
+                <PackagePlus size={18} />
+                Mua featured pack
+              </button>
+              <span>{featuredPack.cardCount} cards · {featuredPack.tierCode} · {featuredPack.shine}</span>
+            </div>
           </div>
 
-          <div className="market-spotlight-pack">
-            <PackArtwork theme={selectedPack} />
+          <div className="market-featured-pack">
+            <PackArtwork theme={featuredPack} />
           </div>
 
-          <div className="market-pack-metrics">
+          <div className="market-featured-metrics">
             <div>
               <ShoppingBag size={18} />
-              <strong>{selectedPack.cardCount}</strong>
+              <strong>{featuredPack.cardCount}</strong>
               <span>Cards</span>
             </div>
             <div>
               <Gem size={18} />
-              <strong>{selectedPack.tierCode}</strong>
+              <strong>{featuredPack.tierCode}</strong>
               <span>Tier</span>
             </div>
             <div>
               <Sparkles size={18} />
-              <strong>{selectedPack.shine}</strong>
-              <span>Shine</span>
+              <strong>{featuredPack.price.toLocaleString('en-US')}</strong>
+              <span>Coins</span>
             </div>
           </div>
-        </aside>
-
-        <section className="market-purchase-panel">
-          <div className="market-purchase-head">
-            <LabelText>Purchase Flow</LabelText>
-            <PriceText>{selectedPack.price.toLocaleString('en-US')}</PriceText>
-          </div>
-
-          <PackPurchaseChoice value={purchaseMode} onChange={setPurchaseMode} />
-
-          <div className="market-odds-panel">
-            <div>
-              <span>Gold+</span>
-              <strong>{selectedPack.price >= 900 ? '68%' : '24%'}</strong>
-            </div>
-            <div>
-              <span>Diamond</span>
-              <strong>{selectedPack.price >= 2600 ? '18%' : '4%'}</strong>
-            </div>
-            <div>
-              <span>Duplicate safety</span>
-              <strong>{selectedPack.cardCount >= 7 ? 'On' : 'Low'}</strong>
-            </div>
-          </div>
-
-          <button className="market-buy-button" type="button" onClick={handleBuy}>
-            <PackagePlus size={18} />
-            {canBuy ? 'Mua pack' : 'Thiếu coin'}
-          </button>
-
-          {receipt ? (
-            <div className={`market-receipt${canBuy ? '' : ' market-receipt-error'}`} aria-live="polite">
-              <ReceiptText size={18} />
-              <span>{receipt}</span>
-            </div>
-          ) : (
-            <div className="market-receipt market-receipt-idle">
-              <ShieldCheck size={18} />
-              <span>Mua xong có thể mở ngay hoặc gửi vào kho pack.</span>
-            </div>
-          )}
         </section>
 
         <section className="market-catalog">
@@ -213,31 +182,31 @@ export default function MarketPage() {
 
           <div className="market-catalog-list" onScroll={handleCatalogScroll}>
             {visiblePacks.map((pack, index) => {
-              const selected = pack.key === selectedPack.key
+              const selected = pack.key === selectedKey
 
               return (
                 <article
                   className={`market-pack-card${selected ? ' market-pack-card-selected' : ''}`}
                   key={pack.key}
                 >
-                  <button type="button" onClick={() => setSelectedKey(pack.key)}>
+                  <button type="button" onClick={() => setSelectedKey(pack.key)} aria-label={`Chọn ${pack.name}`}>
                     <PackArtwork theme={pack} compact />
-                  </button>
-                  <div className="market-pack-card-copy">
-                    <div className="market-pack-card-title">
-                      <div>
-                        <h3>{pack.name}</h3>
-                        <span>{pack.subtitle}</span>
-                      </div>
+                    <span className="market-pack-card-badge">
                       <HotBadge>{marketBadge(index)}</HotBadge>
-                    </div>
-                    <p>{pack.oddsTeaser}</p>
-                    <div className="market-pack-card-meta">
+                    </span>
+                    <span className="market-pack-card-copy">
+                      <span className="market-pack-card-title">
+                        <strong>{pack.name}</strong>
+                        <span>{pack.subtitle}</span>
+                      </span>
+                      <span className="market-pack-card-teaser">{pack.oddsTeaser}</span>
+                    </span>
+                    <span className="market-pack-card-meta">
                       <span>{pack.cardCount} cards</span>
                       <span>{pack.tierCode}</span>
                       <PriceText>{pack.price.toLocaleString('en-US')}</PriceText>
-                    </div>
-                  </div>
+                    </span>
+                  </button>
                 </article>
               )
             })}
@@ -254,6 +223,74 @@ export default function MarketPage() {
           </div>
         </section>
       </section>
+
+      {selectedKey ? (
+        <section className="market-purchase-overlay" aria-label="Chi tiết mua pack" role="dialog" aria-modal="true">
+          <button className="market-purchase-backdrop" type="button" onClick={() => setSelectedKey(null)} aria-label="Đóng chi tiết mua pack" />
+
+          <div className="market-purchase-drawer">
+            <button className="market-drawer-close" type="button" onClick={() => setSelectedKey(null)} aria-label="Đóng chi tiết mua pack">
+              <X size={18} />
+            </button>
+
+            <div className="market-detail">
+              <div className="market-detail-copy">
+                <LabelText>Selected Pack</LabelText>
+                <h2>{selectedPack.name}</h2>
+                <p>{selectedPack.subtitle} · {selectedPack.oddsTeaser}</p>
+              </div>
+
+              <div className="market-spotlight-pack">
+                <PackArtwork theme={selectedPack} />
+              </div>
+
+              <div className="market-pack-metrics">
+                <div>
+                  <ShoppingBag size={18} />
+                  <strong>{selectedPack.cardCount}</strong>
+                  <span>Cards</span>
+                </div>
+                <div>
+                  <Gem size={18} />
+                  <strong>{selectedPack.tierCode}</strong>
+                  <span>Tier</span>
+                </div>
+                <div>
+                  <Sparkles size={18} />
+                  <strong>{selectedPack.shine}</strong>
+                  <span>Shine</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="market-purchase-panel">
+              <div className="market-purchase-head">
+                <LabelText>Purchase Flow</LabelText>
+                <PriceText>{selectedPack.price.toLocaleString('en-US')}</PriceText>
+              </div>
+
+              <PackPurchaseChoice value={purchaseMode} onChange={setPurchaseMode} />
+
+              <button className="market-buy-button" type="button" onClick={handleBuy}>
+                <PackagePlus size={18} />
+                {canBuy ? 'Mua pack' : 'Thiếu coin'}
+              </button>
+
+              {receipt ? (
+                <div className={`market-receipt${canBuy ? '' : ' market-receipt-error'}`} aria-live="polite">
+                  <ReceiptText size={18} />
+                  <span>{receipt}</span>
+                </div>
+              ) : (
+                <div className="market-receipt market-receipt-idle">
+                  <ShieldCheck size={18} />
+                  <span>Mua xong có thể mở ngay hoặc gửi vào kho pack.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   )
 }

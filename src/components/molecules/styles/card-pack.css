@@ -265,7 +265,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 0.58rem;
+  font-size: clamp(0.42rem, 2.9cqw, 0.58rem);
   font-weight: 800;
   line-height: 1;
   color: color-mix(in srgb, var(--pack-light) 82%, white);
@@ -277,8 +277,8 @@
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  min-height: 64px;
-  padding: 12px 8px 10px;
+  min-height: clamp(40px, 28cqw, 64px);
+  padding: clamp(6px, 4.2cqw, 12px) clamp(5px, 3cqw, 8px) clamp(5px, 3.4cqw, 10px);
   border: 1px solid color-mix(in srgb, var(--pack-accent) 58%, transparent);
   border-radius: 8px;
   background:
@@ -291,7 +291,7 @@
 .card-pack-title-panel strong {
   max-width: 100%;
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: clamp(0.64rem, 7.1cqw, 1.18rem);
   font-weight: 900;
   line-height: 0.95;
   color: var(--pack-light);
@@ -301,7 +301,7 @@
 }
 
 .card-pack-title-panel span {
-  font-size: 0.56rem;
+  font-size: clamp(0.34rem, 2.5cqw, 0.56rem);
   font-weight: 800;
   line-height: 1;
   color: color-mix(in srgb, var(--pack-accent) 70%, white);
@@ -353,17 +353,17 @@
 }
 
 .card-pack-orbit svg {
-  width: 18px;
-  height: 18px;
+  width: clamp(11px, 8.5cqw, 18px);
+  height: clamp(11px, 8.5cqw, 18px);
 }
 
 .card-pack-bottom-chips span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 54px;
-  min-height: 24px;
-  padding: 6px 8px;
+  min-width: clamp(38px, 27cqw, 54px);
+  min-height: clamp(16px, 10.6cqw, 24px);
+  padding: clamp(3px, 2cqw, 6px) clamp(4px, 2.8cqw, 8px);
   border: 1px solid color-mix(in srgb, var(--pack-light) 34%, transparent);
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.24);
@@ -379,8 +379,8 @@
 
 .card-pack-particles span {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: clamp(2px, 1.8cqw, 4px);
+  height: clamp(2px, 1.8cqw, 4px);
   border-radius: 999px;
   background: var(--pack-light);
   box-shadow: 0 0 12px var(--pack-accent);

@@ -1,11 +1,13 @@
 .home-page-root {
   position: relative;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
   gap: 16px;
-  height: 100vh;
-  overflow: hidden;
-  padding: 18px 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 18px 0 28px;
   background:
     radial-gradient(ellipse at 48% 0%, rgba(96, 165, 250, 0.18), transparent 45%),
     radial-gradient(ellipse at 88% 20%, rgba(245, 200, 66, 0.12), transparent 34%),
@@ -185,10 +187,9 @@
 .home-game-screen {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 1fr) minmax(0, 0.86fr);
+  grid-template-rows: auto auto;
   gap: 14px;
   min-height: 0;
-  height: 100%;
 }
 
 .home-hero-panel,
@@ -244,13 +245,13 @@
 }
 
 .home-hero-copy h1 {
-  margin: 10px 0 12px;
-  max-width: 640px;
+  margin: 8px 0 10px;
+  max-width: 620px;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 4.4vw, 5.15rem);
+  font-size: clamp(2.2rem, 3.65vw, 4.25rem);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 0.94;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -265,8 +266,9 @@
 }
 
 .home-hero-copy p {
-  max-width: 560px;
-  font-size: 0.94rem;
+  max-width: 520px;
+  font-size: 0.9rem;
+  line-height: 1.52;
 }
 
 .home-hero-actions {
@@ -280,12 +282,12 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
-  min-height: 48px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 0 16px;
   border: 1px solid transparent;
   border-radius: 8px;
   font-family: var(--font-display);
-  font-size: 0.94rem;
+  font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -311,9 +313,9 @@
 .home-hero-pack {
   display: grid;
   justify-items: center;
-  gap: 12px;
+  gap: 10px;
   isolation: isolate;
-  margin-top: 20px;
+  margin-top: 14px;
 }
 
 .home-hero-pack-glow {
@@ -340,7 +342,7 @@
 .home-hero-pack-meta > span:not(.indicator-badge) {
   color: var(--text-secondary);
   font-family: var(--font-display);
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -377,7 +379,7 @@
   margin-top: 4px;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -405,7 +407,7 @@
   margin-top: 8px;
   color: var(--text-primary);
   font-family: var(--font-number);
-  font-size: 1.26rem;
+  font-size: 1.16rem;
   line-height: 1;
 }
 
@@ -502,7 +504,7 @@
 
 .home-section h2 {
   margin-top: 5px;
-  font-size: clamp(1.25rem, 1.45vw, 1.62rem);
+  font-size: clamp(1.12rem, 1.2vw, 1.38rem);
 }
 
 .home-inline-link {
@@ -526,7 +528,7 @@
 }
 
 .home-pulls-section .home-card-row {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(104px, 1fr));
 }
 
 .home-pack-card,
@@ -539,14 +541,48 @@
 
 .home-pack-card {
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-columns: 70px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   padding: 10px;
 }
 
 .home-pack-card .card-pack-artwork {
-  width: 74px;
+  width: 64px;
+}
+
+.home-pack-card .card-pack-brand-row,
+.home-pack-card .card-pack-title-panel span,
+.home-pack-card .card-pack-bottom-chips,
+.home-pending-item .card-pack-brand-row,
+.home-pending-item .card-pack-title-panel span,
+.home-pending-item .card-pack-bottom-chips {
+  display: none;
+}
+
+.home-pack-card .card-pack-inner,
+.home-pending-item .card-pack-inner {
+  inset: 22px 8px;
+  justify-content: center;
+  padding: 8px 6px;
+}
+
+.home-pack-card .card-pack-title-panel,
+.home-pending-item .card-pack-title-panel {
+  min-height: 30px;
+  padding: 5px 4px;
+}
+
+.home-pack-card .card-pack-title-panel strong,
+.home-pending-item .card-pack-title-panel strong {
+  font-size: 0.46rem;
+  line-height: 0.95;
+}
+
+.home-pack-card .card-pack-crest,
+.home-pending-item .card-pack-crest {
+  width: 42%;
+  margin: 6px auto 0;
 }
 
 .home-pack-card-copy {
@@ -558,7 +594,8 @@
 
 .home-pack-card-copy h3,
 .home-pending-item h3 {
-  font-size: 0.98rem;
+  font-size: 0.9rem;
+  line-height: 1.08;
 }
 
 .home-pack-card-copy p {
@@ -578,14 +615,14 @@
 
 .home-pending-item {
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-columns: 54px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   padding: 10px;
 }
 
 .home-pending-item .card-pack-artwork {
-  width: 52px;
+  width: 46px;
 }
 
 .home-pending-item p {
@@ -599,10 +636,13 @@
 .home-player-card {
   position: relative;
   display: grid;
+  align-content: start;
   justify-items: center;
-  gap: 8px;
+  gap: 7px;
   min-width: 0;
-  padding: 12px 8px;
+  min-height: 178px;
+  overflow: hidden;
+  padding: 14px 6px 10px;
 }
 
 .home-player-card-rank {
@@ -612,17 +652,34 @@
   z-index: 2;
   color: var(--coin-gold-light);
   font-family: var(--font-number);
-  font-size: 0.95rem;
+  font-size: 0.86rem;
+}
+
+.home-player-card .visual-card-frame-glow {
+  display: grid;
+  place-items: center;
+  width: min(100%, 132px);
 }
 
 .home-player-card .visual-card-frame {
-  width: min(100%, 116px);
+  width: min(100%, 132px);
+}
+
+.home-player-card .visual-card-frame-glow .visual-card-frame {
+  width: 100%;
 }
 
 .home-player-card .indicator-chip {
-  max-width: 100%;
+  z-index: 3;
+  min-height: 18px;
+  max-width: calc(100% - 16px);
+  padding: 0 6px;
   justify-content: center;
+  overflow: hidden;
+  font-size: 0.46rem;
+  letter-spacing: 0.08em;
   text-align: center;
+  text-overflow: ellipsis;
 }
 
 .home-action-panel {
@@ -635,14 +692,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 42px;
-  padding: 0 10px;
+  min-height: 40px;
+  padding: 0 9px;
   border: 1px solid rgba(96, 165, 250, 0.18);
   border-radius: 8px;
   background: rgba(8, 15, 35, 0.34);
   color: var(--text-secondary);
   font-family: var(--font-display);
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -654,12 +711,6 @@
 }
 
 @media (max-width: 1100px) {
-  .home-page-root {
-    height: auto;
-    min-height: 100vh;
-    overflow-y: auto;
-  }
-
   .home-game-screen {
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: auto;
@@ -715,7 +766,7 @@
   }
 
   .home-hero-copy h1 {
-    font-size: clamp(2.45rem, 4vw, 4.4rem);
+    font-size: clamp(2rem, 3.35vw, 3.45rem);
   }
 
   .home-hero-copy p {
@@ -731,7 +782,7 @@
   }
 
   .home-hero-pack .card-pack-artwork {
-    width: min(100%, 180px);
+    width: min(100%, 176px);
   }
 
   .home-side-panel,
@@ -748,7 +799,11 @@
   }
 
   .home-player-card .visual-card-frame {
-    width: min(100%, 100px);
+    width: min(100%, 98px);
+  }
+
+  .home-player-card .visual-card-frame-glow {
+    width: min(100%, 98px);
   }
 }
 
@@ -769,7 +824,7 @@
   }
 
   .home-hero-copy h1 {
-    font-size: clamp(2.85rem, 12vw, 4rem);
+    font-size: clamp(2.35rem, 10vw, 3.4rem);
   }
 
   .home-side-panel {
@@ -791,7 +846,11 @@
   }
 
   .home-player-card .visual-card-frame {
-    width: min(72vw, 230px);
+    width: min(72vw, 210px);
+  }
+
+  .home-player-card .visual-card-frame-glow {
+    width: min(72vw, 210px);
   }
 }
 

@@ -2,8 +2,10 @@
   position: fixed;
   inset: 0;
   z-index: 500;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
   background:
     radial-gradient(ellipse at 42% 0%, rgba(96, 165, 250, 0.16), transparent 46%),
     radial-gradient(ellipse at 86% 18%, rgba(245, 200, 66, 0.11), transparent 34%),
@@ -91,13 +93,14 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(270px, 0.35fr) minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(520px, 1fr);
   gap: 16px;
-  width: min(1360px, calc(100% - 32px));
-  height: calc(100vh - 32px);
+  width: min(1420px, calc(100% - 32px));
+  min-height: calc(100vh - 32px);
+  min-height: calc(100dvh - 32px);
   margin: 16px auto;
   padding-left: 128px;
+  padding-bottom: 16px;
 }
 
 .card-inventory-topbar,
@@ -130,7 +133,6 @@
 }
 
 .card-inventory-topbar {
-  grid-column: 1 / 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -198,7 +200,7 @@
 
 .card-inventory-detail {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(300px, auto) auto;
   justify-items: center;
   gap: 14px;
   min-height: 0;
@@ -218,11 +220,18 @@
 .card-inventory-spotlight-card {
   display: grid;
   place-items: center;
+  width: 100%;
   min-height: 0;
 }
 
-.card-inventory-spotlight-card .visual-card-frame {
+.card-inventory-spotlight-card .visual-card-frame-glow {
+  display: grid;
+  place-items: center;
   width: min(100%, 260px);
+}
+
+.card-inventory-spotlight-card .visual-card-frame {
+  width: 100%;
 }
 
 .card-inventory-metrics {
@@ -263,7 +272,7 @@
 
 .card-inventory-board {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(360px, 1fr);
   min-height: 0;
   padding: 14px;
 }
@@ -343,9 +352,10 @@
 
 .card-inventory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
   gap: 12px;
   min-height: 0;
+  max-height: max(360px, calc(100dvh - 240px));
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: 6px;
@@ -396,7 +406,7 @@
 }
 
 .card-inventory-card-button .visual-card-frame {
-  width: min(100%, 138px);
+  width: min(100%, 148px);
 }
 
 .card-inventory-item-meta {
@@ -454,32 +464,209 @@
   font-size: 0.82rem;
 }
 
+.card-preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.card-preview-backdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(96, 165, 250, 0.16), transparent 38%),
+    rgba(0, 0, 0, 0.78);
+  cursor: pointer;
+}
+
+.card-preview-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(300px, 0.9fr);
+  align-items: center;
+  gap: 24px;
+  width: min(860px, 100%);
+  min-height: min(680px, calc(100dvh - 48px));
+  padding: 28px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 38% 18%, rgba(96, 165, 250, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(12, 24, 48, 0.96), rgba(4, 9, 20, 0.98));
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.card-preview-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 8px;
+  background: rgba(8, 15, 35, 0.7);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.card-preview-art {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  perspective: 1100px;
+  perspective-origin: center;
+}
+
+.card-preview-tilt {
+  --card-tilt-x: 0deg;
+  --card-tilt-y: 0deg;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 330px);
+  transform: rotateX(var(--card-tilt-x)) rotateY(var(--card-tilt-y)) translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.card-preview-tilt:hover {
+  transition: none;
+}
+
+.card-preview-tilt .visual-card-frame-glow {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.card-preview-tilt .visual-card-frame {
+  width: 100%;
+}
+
+.card-preview-tilt .visual-card-frame-bg {
+  transform: translateZ(0);
+}
+
+.card-preview-copy {
+  min-width: 0;
+}
+
+.card-preview-copy h2 {
+  margin: 8px 0 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.8vw, 4.6rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.card-preview-chips,
+.card-preview-sell-actions button {
+  display: flex;
+  align-items: center;
+}
+
+.card-preview-chips {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.card-preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.card-preview-metrics div {
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 8px;
+  background: rgba(8, 15, 35, 0.46);
+}
+
+.card-preview-metrics svg {
+  color: var(--coin-gold-light);
+}
+
+.card-preview-metrics strong,
+.card-preview-metrics .data-price-text {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-number);
+  font-size: 1.22rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.card-preview-metrics span {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+}
+
+.card-preview-sell-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.card-preview-sell-actions button {
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 50px;
+  padding: 0 14px;
+  border: 1px solid rgba(245, 200, 66, 0.36);
+  border-radius: 8px;
+  background: rgba(245, 200, 66, 0.1);
+  color: var(--coin-gold-light);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.card-preview-sell-actions button:first-child {
+  border-color: transparent;
+  background: linear-gradient(180deg, var(--coin-gold-light), var(--coin-gold));
+  color: var(--text-inverse);
+}
+
+.card-preview-sell-actions button:disabled {
+  border-color: rgba(96, 165, 250, 0.18);
+  background: rgba(8, 15, 35, 0.44);
+  color: var(--text-muted);
+  cursor: default;
+}
+
 @media (max-width: 980px) {
   .card-inventory-shell {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 168px minmax(0, 1fr);
-    height: calc(100vh - 24px);
+    grid-template-rows: auto minmax(420px, 1fr);
+    min-height: calc(100vh - 24px);
+    min-height: calc(100dvh - 24px);
     margin: 12px auto;
     padding-left: 0;
     padding-top: 48px;
-  }
-
-  .card-inventory-topbar {
-    grid-column: auto;
-  }
-
-  .card-inventory-detail {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: 1fr;
-    align-items: center;
-  }
-
-  .card-inventory-spotlight-card {
-    display: none;
-  }
-
-  .card-inventory-metrics {
-    width: min(100%, 320px);
   }
 
   .card-inventory-toolbar {
@@ -490,11 +677,20 @@
   .card-inventory-filter-group {
     justify-content: flex-start;
   }
+
+  .card-preview-panel {
+    grid-template-columns: 1fr;
+    width: min(620px, 100%);
+  }
+
+  .card-preview-tilt {
+    width: min(64vw, 300px);
+  }
 }
 
 @media (max-width: 640px) {
   .card-inventory-shell {
-    grid-template-rows: auto 128px minmax(0, 1fr);
+    grid-template-rows: auto minmax(360px, 1fr);
     width: min(100%, calc(100% - 24px));
   }
 
@@ -505,14 +701,6 @@
 
   .card-inventory-title h1 {
     font-size: 1.6rem;
-  }
-
-  .card-inventory-detail {
-    grid-template-columns: 1fr;
-  }
-
-  .card-inventory-metrics {
-    display: none;
   }
 
   .card-inventory-grid {
@@ -528,15 +716,53 @@
     flex-direction: column;
     padding: 10px;
   }
+
+  .card-preview-overlay {
+    align-items: start;
+    padding: 14px;
+  }
+
+  .card-preview-panel {
+    min-height: auto;
+    padding: 20px 14px 16px;
+  }
+
+  .card-preview-copy h2 {
+    font-size: clamp(2rem, 12vw, 3.2rem);
+  }
+
+  .card-preview-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .card-preview-sell-actions button {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card-inventory-root,
   .card-inventory-root-leaving,
   .card-inventory-stars::before,
-  .card-inventory-item {
+  .card-inventory-item,
+  .card-preview-panel,
+  .card-preview-tilt,
+  .card-preview-tilt::before,
+  .card-preview-tilt::after {
     animation: none;
     transition: none;
+  }
+
+  .card-preview-tilt {
+    transform: none;
+  }
+
+  .card-preview-tilt::before,
+  .card-preview-tilt::after {
+    display: none;
   }
 }
 

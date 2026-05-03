@@ -64,6 +64,7 @@
 
 .visual-card-frame {
   position: relative;
+  container-type: inline-size;
   width: min(100%, 220px);
   aspect-ratio: 2 / 3;
   border: none;
@@ -81,40 +82,42 @@
 }
 
 .visual-card-frame-content {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 5;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 12% 8% 18% 8%; /* Tăng padding bottom để đẩy cụm stat lên trên */
 }
 
 .visual-card-frame-top {
+  position: absolute;
+  top: 15.5%;
+  left: 13%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: fit-content;
-  gap: 0px; /* Thu gọn khoảng cách giữa các phần tử */
-  z-index: 10;
-  margin-top: 8%; /* Đẩy cục chỉ số xuống một chút */
-  margin-left: 8%; /* Đẩy sang trái một chút */
+  width: max-content;
+  gap: 0;
+  z-index: 20;
 }
 
 .visual-card-frame-top .text-stat-number {
-  font-size: clamp(1.6rem, 15cqw, 2.2rem);
+  font-size: 13cqw;
+  font-family: var(--font-stat), var(--font-body), sans-serif;
+  font-weight: 700;
   line-height: 1;
   color: #fff !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .visual-card-frame-top .text-label {
-  font-size: clamp(0.7rem, 6cqw, 0.8rem);
+  font-size: 10.6cqw;
+  font-family: var(--font-stat), var(--font-body), sans-serif;
   font-weight: 700;
+  line-height: 0.82;
   color: #fff !important;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .visual-card-frame-meta {
@@ -141,15 +144,15 @@
 }
 
 .visual-card-frame-meta .visual-flag-icon {
-  width: 24px;
-  height: 16px;
+  width: 8.2cqw;
+  height: 5.4cqw;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 }
 
 .visual-card-frame-meta .visual-club-badge {
-  width: 24px;
-  height: 24px;
-  font-size: 0.65rem;
+  width: 8.6cqw;
+  height: 8.6cqw;
+  font-size: 3.2cqw;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
@@ -166,10 +169,10 @@
 
 .visual-card-frame-art {
   position: absolute;
-  top: 12%;
-  right: 5%;
-  bottom: 34%;
-  left: 5%; /* Mở rộng sang trái để ảnh nằm giữa thẻ */
+  top: 17%;
+  right: 6%;
+  bottom: 39%;
+  left: 6%;
   z-index: 5;
   display: flex;
   align-items: flex-end;
@@ -178,21 +181,24 @@
 }
 
 .visual-card-player-image {
-  width: 90%;
-  height: 95%;
+  width: 92%;
+  height: 100%;
   object-fit: contain;
   object-position: bottom center;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
-  transform: translateX(6%); /* Nhích sang phải một chút để né chỉ số góc trái trên */
+  transform: translateX(6%);
 }
 
 .visual-card-frame-bottom {
+  position: absolute;
+  right: 8%;
+  bottom: 15%;
+  left: 8%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px; /* Giảm gap để cụm dưới gọn hơn */
-  z-index: 10;
-  width: 100%;
+  gap: 1.35cqw;
+  z-index: 20;
 }
 
 .visual-card-frame-name {
@@ -201,9 +207,10 @@
 }
 
 .visual-card-frame-name .text-player-name {
-  font-size: clamp(1rem, 8cqw, 1.25rem);
+  font-size: 6.4cqw;
+  font-family: var(--font-stat), var(--font-body), sans-serif;
   font-weight: 800;
-  letter-spacing: 0.02em; /* Reduced from 0.05em */
+  letter-spacing: 0.02em;
   color: #fff !important;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
@@ -216,8 +223,8 @@
 .visual-card-frame-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px 12px;
-  width: 85%;
+  gap: 0.45cqw 3.1cqw;
+  width: 88%;
 }
 
 .visual-card-frame-stat {
@@ -225,20 +232,23 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 2.6cqw;
 }
 
 .visual-card-frame-stat .text-stat-number {
-  font-size: clamp(0.85rem, 6cqw, 0.95rem);
+  font-size: 6.7cqw;
+  font-family: var(--font-stat), var(--font-body), sans-serif;
   font-weight: 800;
   color: #fff !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   text-align: right;
-  width: 22px;
+  width: 7.2cqw;
 }
 
 .visual-card-frame-stat .text-label {
-  font-size: clamp(0.7rem, 5cqw, 0.8rem);
+  font-size: 4.25cqw;
+  font-family: var(--font-stat), var(--font-body), sans-serif;
+  font-weight: 700;
   color: rgba(255, 255, 255, 0.9) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
