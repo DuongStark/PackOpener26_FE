@@ -1,10 +1,11 @@
-import { useRef, type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type ReactNode } from 'react'
+import { useRef, type CSSProperties, type HTMLAttributes, type ImgHTMLAttributes, type ReactNode, type SyntheticEvent } from 'react'
 import './styles/visual-primitives.css'
 import { LabelText, PlayerNameText, StatNumber } from './Typography'
 import bronzeFrameBase from '../../assets/optimized/bronze.webp'
 import silverFrameBase from '../../assets/optimized/silver.webp'
 import goldFrameBase from '../../assets/optimized/gold.webp'
 import diamondFrameBase from '../../assets/optimized/diamond.webp'
+import defaultPlayerImage from '../../assets/default.png'
 
 type LegacyRarity = 'bronze' | 'silver' | 'gold' | 'special' | 'elite'
 export type CardRarity =
@@ -21,6 +22,17 @@ type Rarity = CardRarity | LegacyRarity
 
 function joinClassNames(...classNames: Array<string | undefined>) {
   return classNames.filter(Boolean).join(' ')
+}
+
+function useDefaultPlayerImage(event: SyntheticEvent<HTMLImageElement>) {
+  const image = event.currentTarget
+
+  if (image.dataset.fallbackApplied === 'true') {
+    return
+  }
+
+  image.dataset.fallbackApplied = 'true'
+  image.src = defaultPlayerImage
 }
 
 function useParallax() {
@@ -407,12 +419,12 @@ export function CardFrame({
         </div>
 
         <div className="visual-card-frame-art">
-          {/* Dùng ảnh từ prop truyền vào, fallback là Haaland */}
           <img 
-            src={imageSrc || "https://cdn.sofifa.net/players/239/085/24_120.png"} 
+            src={imageSrc || defaultPlayerImage} 
             alt={playerName} 
             className="visual-card-player-image" 
             referrerPolicy="no-referrer"
+            onError={useDefaultPlayerImage}
           />
         </div>
 

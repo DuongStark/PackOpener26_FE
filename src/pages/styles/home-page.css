@@ -141,6 +141,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 38px;
   padding: 0 14px;
   border: 1px solid transparent;
@@ -151,6 +152,11 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.home-nav-link svg {
+  flex: 0 0 auto;
+  display: none;
 }
 
 .home-nav-link:hover,
@@ -868,15 +874,25 @@
     font-size: 1.08rem;
   }
 
+  .home-brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+
   .home-nav {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
+    width: 100%;
   }
 
   .home-nav-link {
     padding: 0 8px;
     font-size: 0.76rem;
+  }
+
+  .home-nav-link svg {
+    display: block;
   }
 
   .home-hero-panel,
@@ -887,6 +903,19 @@
 
   .home-hero-panel {
     padding: 22px;
+  }
+
+  .home-hero-copy h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    line-height: 0.96;
+  }
+
+  .home-hero-copy p {
+    font-size: 0.86rem;
+  }
+
+  .home-hero-pack .card-pack-artwork {
+    width: min(76vw, 190px);
   }
 
   .home-button {
@@ -900,6 +929,119 @@
   .home-section-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .home-pulls-section .home-card-row {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  }
+
+  .home-player-card {
+    min-height: 236px;
+    padding: 14px 8px 10px;
+  }
+
+  .home-player-card .visual-card-frame,
+  .home-player-card .visual-card-frame-glow {
+    width: min(100%, 138px);
+  }
+}
+
+@media (max-width: 430px) {
+  .home-page-root {
+    gap: 12px;
+    padding: 10px 0 22px;
+  }
+
+  .home-topbar,
+  .home-game-screen {
+    width: min(100%, calc(100% - 20px));
+  }
+
+  .home-topbar {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .home-brand {
+    width: 100%;
+    font-size: 0.98rem;
+  }
+
+  .home-nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-nav-link {
+    min-height: 42px;
+    padding: 0;
+  }
+
+  .home-nav-link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .home-account {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .home-hero-panel,
+  .home-side-panel,
+  .home-section {
+    padding: 14px;
+  }
+
+  .home-hero-copy h1 {
+    font-size: clamp(1.75rem, 10vw, 2.2rem);
+  }
+
+  .home-hero-actions {
+    margin-top: 16px;
+  }
+
+  .home-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-activity-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .home-pack-card {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+
+  .home-pack-card .card-pack-artwork {
+    width: 58px;
+  }
+
+  .home-pending-item {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .home-pulls-section .home-card-row {
+    grid-template-columns: 1fr;
+  }
+
+  .home-player-card {
+    min-height: 272px;
+  }
+
+  .home-player-card .visual-card-frame,
+  .home-player-card .visual-card-frame-glow {
+    width: min(64vw, 168px);
+  }
+
+  .home-action-panel a {
+    min-height: 44px;
   }
 }
 

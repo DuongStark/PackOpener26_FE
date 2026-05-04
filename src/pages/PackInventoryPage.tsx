@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, UIEvent } from 'react'
 import {
   ArrowLeft,
   CircleDollarSign,
   Clock3,
-  Coins,
   PackageOpen,
   Search,
   ShieldCheck,
@@ -12,9 +11,19 @@ import {
   X,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
+import { readPersistedAuthSession } from '../services/authApi'
+import {
+  fetchPackInventory,
+  openUserPack,
+  sellInventoryCard,
+  type ApiOpenedCard,
+  type ApiUserPack,
+} from '../services/packInventoryApi'
 import {
   Avatar,
+  BalanceChangeToast,
   CardFrame,
+  CoinDisplay,
   HotBadge,
   LabelText,
   PACK_THEMES,
@@ -37,9 +46,12 @@ type UserPack = {
   status: 'pending' | 'opened'
   purchasedAt: string
   theme: (typeof PACK_THEMES)[number]
+  packName?: string
+  oddsTeaser?: string
+  cardCount?: number
 }
 
-type MockCardRarity =
+type OpenedCardRarity =
   | 'BRONZE_COMMON'
   | 'BRONZE_RARE'
   | 'SILVER_COMMON'
@@ -50,10 +62,11 @@ type MockCardRarity =
   | 'DIAMOND_COMMON'
   | 'DIAMOND_RARE'
 
-type MockOpenCard = {
+type OpenedCard = {
   id: string
+  apiCardId?: string
   name: string
-  rarity: MockCardRarity
+  rarity: OpenedCardRarity
   overall: number
   position: string
   clubCode: string
@@ -64,7 +77,7 @@ type MockOpenCard = {
   stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number }
 }
 
-const rarityRank: Record<MockCardRarity, number> = {
+const rarityRank: Record<OpenedCardRarity, number> = {
   BRONZE_COMMON: 1,
   BRONZE_RARE: 2,
   SILVER_COMMON: 3,
@@ -76,145 +89,91 @@ const rarityRank: Record<MockCardRarity, number> = {
   DIAMOND_RARE: 9,
 }
 
-const tunnelRarities = new Set<MockCardRarity>(['GOLD_EPIC', 'DIAMOND_COMMON', 'DIAMOND_RARE'])
+const tunnelRarities = new Set<OpenedCardRarity>(['GOLD_EPIC', 'DIAMOND_COMMON', 'DIAMOND_RARE'])
 
-const cardSeeds: Array<Omit<MockOpenCard, 'id' | 'sellPrice'>> = [
-  {
-    name: 'K. MBAPPÉ',
-    rarity: 'DIAMOND_RARE',
-    overall: 91,
-    position: 'ST',
-    clubCode: 'RMA',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png',
-    imageSrc: 'https://cdn.sofifa.net/players/231/747/26_120.png',
-    stats: { pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 },
-  },
-  {
-    name: 'E. HAALAND',
-    rarity: 'DIAMOND_COMMON',
-    overall: 90,
-    position: 'ST',
-    clubCode: 'MCI',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png',
-    imageSrc: 'https://cdn.sofifa.net/players/239/085/26_120.png',
-    stats: { pac: 86, sho: 91, pas: 70, dri: 80, def: 45, phy: 88 },
-  },
-  {
-    name: 'K. KVARATSKHELIA',
-    rarity: 'GOLD_EPIC',
-    overall: 87,
-    position: 'LW',
-    clubCode: 'PSG',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png',
-    imageSrc: 'https://cdn.sofifa.net/players/247/635/26_120.png',
-    stats: { pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 },
-  },
-  {
-    name: 'B. SAKA',
-    rarity: 'GOLD_RARE',
-    overall: 86,
-    position: 'RW',
-    clubCode: 'ARS',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/14.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/1.png',
-    imageSrc: 'https://cdn.sofifa.net/players/246/669/26_120.png',
-    stats: { pac: 85, sho: 82, pas: 81, dri: 87, def: 60, phy: 70 },
-  },
-  {
-    name: 'PEDRI',
-    rarity: 'GOLD_COMMON',
-    overall: 85,
-    position: 'CM',
-    clubCode: 'BAR',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/45.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/241.png',
-    imageSrc: 'https://cdn.sofifa.net/players/251/854/26_120.png',
-    stats: { pac: 78, sho: 69, pas: 84, dri: 88, def: 70, phy: 66 },
-  },
-  {
-    name: 'R. LEÃO',
-    rarity: 'SILVER_RARE',
-    overall: 84,
-    position: 'LW',
-    clubCode: 'MIL',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/38.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/47.png',
-    imageSrc: 'https://cdn.sofifa.net/players/241/721/26_120.png',
-    stats: { pac: 93, sho: 80, pas: 75, dri: 87, def: 32, phy: 77 },
-  },
-  {
-    name: 'A. GARNACHO',
-    rarity: 'SILVER_COMMON',
-    overall: 79,
-    position: 'LW',
-    clubCode: 'MUN',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/52.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/11.png',
-    imageSrc: 'https://cdn.sofifa.net/players/268/438/26_120.png',
-    stats: { pac: 87, sho: 74, pas: 70, dri: 82, def: 35, phy: 62 },
-  },
-  {
-    name: 'J. BELLINGHAM',
-    rarity: 'BRONZE_RARE',
-    overall: 88,
-    position: 'CM',
-    clubCode: 'RMA',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/14.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png',
-    imageSrc: 'https://cdn.sofifa.net/players/252/371/26_120.png',
-    stats: { pac: 80, sho: 83, pas: 84, dri: 86, def: 78, phy: 82 },
-  },
-]
 
 function readAuthSession(): StoredAuthSession | null {
-  const raw = window.localStorage.getItem('packopener.auth') ?? window.sessionStorage.getItem('packopener.auth')
+  return readPersistedAuthSession()
+}
 
-  if (!raw) return null
+function normalize(value?: string) {
+  return value?.toLowerCase().replace(/[^a-z0-9]/g, '') ?? ''
+}
 
-  try {
-    return JSON.parse(raw) as StoredAuthSession
-  } catch {
-    return null
+function themeForApiPack(pack?: ApiUserPack['pack']) {
+  if (!pack?.name) return PACK_THEMES[0]
+
+  return (
+    PACK_THEMES.find((theme) => normalize(theme.name) === normalize(pack.name)) ??
+    PACK_THEMES.find((theme) => normalize(pack.name).includes(normalize(theme.name)) || normalize(theme.name).includes(normalize(pack.name))) ??
+    PACK_THEMES[0]
+  )
+}
+
+function formatRelativeTime(value?: string | null) {
+  if (!value) return 'Vua mua'
+
+  const timestamp = new Date(value).getTime()
+  if (Number.isNaN(timestamp)) return 'Vua mua'
+
+  const minutes = Math.max(1, Math.round((Date.now() - timestamp) / 60000))
+  if (minutes < 60) return `${minutes} phut truoc`
+
+  const hours = Math.round(minutes / 60)
+  if (hours < 24) return `${hours} gio truoc`
+
+  return `${Math.round(hours / 24)} ngay truoc`
+}
+
+function mapApiUserPack(pack: ApiUserPack): UserPack {
+  const theme = themeForApiPack(pack.pack)
+
+  return {
+    id: pack.id,
+    status: pack.status === 'OPENED' ? 'opened' : 'pending',
+    purchasedAt: formatRelativeTime(pack.purchasedAt ?? pack.createdAt ?? pack.openedAt),
+    theme,
+    packName: pack.pack?.name,
+    oddsTeaser: pack.pack?.description ?? pack.pack?.oddsTeaser,
+    cardCount: pack.pack?.cardCount,
   }
 }
 
-function buildUserPacks(): UserPack[] {
-  return Array.from({ length: 48 }, (_, index) => {
-    const theme = PACK_THEMES[(index * 3 + 1) % PACK_THEMES.length]
-    const status = index % 5 === 0 ? 'opened' : 'pending'
 
-    return {
-      id: `UP-${String(index + 1).padStart(4, '0')}`,
-      status,
-      purchasedAt: `${index + 1} phút trước`,
-      theme,
-    }
-  })
+function estimateSellPrice(card: Pick<OpenedCard, 'overall' | 'rarity'>, index = 0) {
+  return Math.round(160 + card.overall * 22 + rarityRank[card.rarity] * 90 + index * 18)
 }
 
-function buildOpenCards(pack: UserPack): MockOpenCard[] {
-  const count = pack.theme.cardCount
-  const isElitePack = pack.theme.price >= 1900 || pack.theme.shine === 'legendary'
-
-  return Array.from({ length: count }, (_, index) => {
-    const seedIndex = isElitePack && index === count - 1 ? 0 : (pack.id.length + index * 2 + pack.theme.key.length) % cardSeeds.length
-    const seed = cardSeeds[seedIndex]
-    const variance = (index + pack.theme.price) % 3
-    const rarity = isElitePack && index === count - 1 ? seed.rarity : seed.rarity
-    const overall = Math.max(64, seed.overall - (isElitePack && index === count - 1 ? 0 : variance))
+function mapApiOpenedCards(cards: ApiOpenedCard[], fallbackPack: UserPack): OpenedCard[] {
+  return cards.map((card, index) => {
+    const rarity = (card.rarity in rarityRank ? card.rarity : 'BRONZE_COMMON') as OpenedCardRarity
+    const mapped = {
+      id: `${fallbackPack.id}-${card.cardId}-${index}`,
+      apiCardId: card.cardId,
+      name: card.name,
+      rarity,
+      overall: card.overall,
+      position: card.position,
+      clubCode: card.club ?? '',
+      nationImageSrc: card.nationImageUrl ?? '',
+      clubImageSrc: card.clubImageUrl ?? '',
+      imageSrc: card.imageUrl ?? '',
+      sellPrice: card.sellPrice ?? 0,
+      stats: {
+        pac: card.pace ?? 0,
+        sho: card.shooting ?? 0,
+        pas: card.passing ?? 0,
+        dri: card.dribbling ?? 0,
+        def: card.defending ?? 0,
+        phy: card.physical ?? 0,
+      },
+    } satisfies OpenedCard
 
     return {
-      ...seed,
-      id: `${pack.id}-CARD-${index + 1}`,
-      rarity,
-      overall,
-      sellPrice: Math.round(160 + overall * 22 + rarityRank[rarity] * 90 + index * 18),
+      ...mapped,
+      sellPrice: mapped.sellPrice || estimateSellPrice(mapped, index),
     }
   }).sort((a, b) => {
-    if (count < 4) return 0
     const rarityDelta = rarityRank[a.rarity] - rarityRank[b.rarity]
     return rarityDelta === 0 ? a.overall - b.overall : rarityDelta
   })
@@ -224,14 +183,14 @@ function formatCoin(value: number) {
   return value.toLocaleString('vi-VN')
 }
 
-function getBestCard(cards: MockOpenCard[]) {
+function getBestCard(cards: OpenedCard[]) {
   return [...cards].sort((a, b) => {
     const rarityDelta = rarityRank[b.rarity] - rarityRank[a.rarity]
     return rarityDelta === 0 ? b.overall - a.overall : rarityDelta
   })[0]
 }
 
-function MockCardFrame({ card, glow = false }: { card: MockOpenCard; glow?: boolean }) {
+function OpenedCardFrame({ card, glow = false }: { card: OpenedCard; glow?: boolean }) {
   return (
     <CardFrame
       rarity={card.rarity}
@@ -257,20 +216,40 @@ function PackOpeningOverlay({
   startingBalance: number
   onClose: () => void
 }) {
-  const cards = useMemo(() => buildOpenCards(pack), [pack])
+  const [cards, setCards] = useState<OpenedCard[]>([])
   const bestCard = getBestCard(cards)
   const [activeIndex, setActiveIndex] = useState(0)
   const [rareStep, setRareStep] = useState(0)
   const [isDroppingRare, setIsDroppingRare] = useState(false)
   const [soldIds, setSoldIds] = useState<Set<string>>(() => new Set())
+  const [lastSale, setLastSale] = useState<OpenedCard | null>(null)
+  const [serverBalance, setServerBalance] = useState<number | null>(null)
   const revealedCards = cards.slice(0, activeIndex)
   const activeCard = cards[activeIndex]
   const activeIsRare = activeCard ? tunnelRarities.has(activeCard.rarity) : false
   const visibleCards = activeCard && !activeIsRare ? cards.slice(0, activeIndex + 1) : revealedCards
   const soldTotal = revealedCards.filter((card) => soldIds.has(card.id)).reduce((sum, card) => sum + card.sellPrice, 0)
-  const currentBalance = startingBalance + soldTotal
+  const currentBalance = serverBalance ?? startingBalance + soldTotal
   const unsoldCards = revealedCards.filter((card) => !soldIds.has(card.id))
   const revealFinished = activeIndex >= cards.length
+
+  useEffect(() => {
+    let cancelled = false
+
+    openUserPack(pack.id)
+      .then((response) => {
+        if (cancelled) return
+        setCards(mapApiOpenedCards(response.cards, pack))
+        if (typeof response.newBalance === 'number') {
+          setServerBalance(response.newBalance)
+        }
+      })
+      .catch(() => undefined)
+
+    return () => {
+      cancelled = true
+    }
+  }, [pack])
 
   useEffect(() => {
     if (!activeCard || activeIsRare) return
@@ -292,11 +271,39 @@ function PackOpeningOverlay({
     return () => window.clearTimeout(timer)
   }, [activeCard, activeIsRare, isDroppingRare, rareStep])
 
-  const sellCard = (cardId: string) => {
+  const sellCard = async (cardId: string) => {
+    const card = revealedCards.find((item) => item.id === cardId)
+    if (card) {
+      try {
+        if (card.apiCardId) {
+          const result = await sellInventoryCard(card.apiCardId)
+          setLastSale({ ...card, sellPrice: result.totalEarned })
+          setServerBalance(result.newBalance)
+        } else {
+          setLastSale(card)
+        }
+      } catch {
+        setLastSale(card)
+      }
+    }
     setSoldIds((current) => new Set(current).add(cardId))
   }
 
   const sellAll = () => {
+    const total = unsoldCards.reduce((sum, card) => sum + card.sellPrice, 0)
+    if (total > 0) {
+      setLastSale({
+        ...unsoldCards[0],
+        id: 'bulk-sale',
+        name: 'Bulk sale',
+        sellPrice: total,
+      })
+    }
+    unsoldCards.forEach((card) => {
+      if (card.apiCardId) {
+        sellInventoryCard(card.apiCardId).then((result) => setServerBalance(result.newBalance)).catch(() => undefined)
+      }
+    })
     setSoldIds(new Set(revealedCards.map((card) => card.id)))
   }
 
@@ -331,8 +338,7 @@ function PackOpeningOverlay({
         </div>
         <div className="pack-opening-hud-actions">
           <div className="pack-opening-coin">
-            <Coins size={18} />
-            <strong>{formatCoin(currentBalance)}</strong>
+            <CoinDisplay balance={currentBalance} />
           </div>
           <button type="button" onClick={onClose} aria-label="Đóng màn mở pack">
             <X size={18} />
@@ -361,10 +367,11 @@ function PackOpeningOverlay({
             const sold = soldIds.has(card.id)
             const isBest = card.id === bestCard.id
             const isFlipping = !activeIsRare && activeCard?.id === card.id && index === activeIndex
+            const isNewPull = !sold && index === visibleCards.length - 1
 
             return (
               <article
-                className={`pack-opening-result-card${isBest ? ' pack-opening-result-card-best' : ''}${sold ? ' pack-opening-result-card-sold' : ''}${isFlipping ? ' pack-opening-result-card-flipping' : ''}`}
+                className={`pack-opening-result-card${isBest ? ' pack-opening-result-card-best' : ''}${sold ? ' pack-opening-result-card-sold' : ''}${isFlipping ? ' pack-opening-result-card-flipping' : ''}${isNewPull ? ' pack-opening-result-card-new' : ''}`}
                 key={card.id}
               >
                 <div className="pack-opening-flip-shell">
@@ -372,7 +379,7 @@ function PackOpeningOverlay({
                     <span>PACKOPENER</span>
                   </div>
                   <div className="pack-opening-result-frame">
-                    <MockCardFrame card={card} glow={isBest} />
+                    <OpenedCardFrame card={card} glow={isBest} />
                   </div>
                 </div>
                 <div className="pack-opening-result-meta">
@@ -392,6 +399,15 @@ function PackOpeningOverlay({
           ))}
         </div>
       </section>
+
+      {lastSale ? (
+        <BalanceChangeToast
+          key={`${lastSale.id}-${lastSale.sellPrice}`}
+          className="pack-opening-sale-toast"
+          amount={lastSale.sellPrice}
+          message={lastSale.name === 'Bulk sale' ? 'BÃ¡n táº¥t cáº£ tháº» Ä‘ang hiá»ƒn thá»‹' : `BÃ¡n ${lastSale.name}`}
+        />
+      ) : null}
 
       {!revealFinished && activeCard && activeIsRare ? (
         <button
@@ -423,7 +439,7 @@ function PackOpeningOverlay({
             {rareStep === 3 ? (
               <span className="pack-opening-reveal-card">
                 <RarityChip rarity={activeCard.rarity}>{activeCard.rarity.replace(/_/g, ' ')}</RarityChip>
-                <MockCardFrame card={activeCard} glow={activeIsRare} />
+                <OpenedCardFrame card={activeCard} glow={activeIsRare} />
               </span>
             ) : null}
           </span>
@@ -439,16 +455,32 @@ function PackOpeningOverlay({
 export default function PackInventoryPage() {
   const [visibleCount, setVisibleCount] = useState(24)
   const [isLeaving, setIsLeaving] = useState(false)
-  const [packs, setPacks] = useState<UserPack[]>(() => buildUserPacks())
+  const [packs, setPacks] = useState<UserPack[]>([])
+  const [serverBalance, setServerBalance] = useState<number | null>(null)
   const [openingPack, setOpeningPack] = useState<UserPack | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
   const session = readAuthSession()
   const username = session?.user?.username ?? 'HLV'
-  const balance = session?.user?.balance ?? 300
+  const balance = serverBalance ?? session?.user?.balance ?? 300
   const initials = username.slice(0, 2).toUpperCase()
   const visiblePacks = packs.slice(0, visibleCount)
   const pendingCount = packs.filter((pack) => pack.status === 'pending').length
   const openedCount = packs.length - pendingCount
+  const eliteCount = packs.filter((pack) => pack.theme.shine === 'legendary' || pack.theme.price >= 1900).length
+
+  useEffect(() => {
+    let cancelled = false
+
+    fetchPackInventory().then((data) => {
+      if (cancelled || !data) return
+      setPacks(data.packs.map(mapApiUserPack))
+      setServerBalance(data.user.balance)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleListScroll = (event: UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget
@@ -527,7 +559,7 @@ export default function PackInventoryPage() {
             </div>
             <div>
               <Sparkles size={18} />
-              <strong>4</strong>
+              <strong>{eliteCount}</strong>
               <span>Elite</span>
             </div>
           </div>
@@ -547,30 +579,42 @@ export default function PackInventoryPage() {
           </div>
 
           <div className="pack-inventory-list" ref={listRef} onScroll={handleListScroll}>
-            {visiblePacks.map((pack, index) => (
-              <article className="pack-inventory-card" key={pack.id}>
+            {packs.length === 0 ? (
+              <div className="pack-inventory-empty" aria-live="polite">
+                <PackageOpen size={24} />
+                <strong>Kho pack rỗng</strong>
+                <span>Bạn chưa có pack nào trong kho.</span>
+              </div>
+            ) : null}
+
+            {visiblePacks.map((pack, index) => {
+              const isFeatured = index === 0
+              const isFresh = index > 0 && index < 3
+
+              return (
+              <article className={`pack-inventory-card${isFeatured ? ' pack-inventory-card-featured' : ''}`} key={pack.id}>
                 <div className="pack-inventory-card-art">
                   <PackArtwork theme={pack.theme} compact />
-                  {index < 3 ? <HotBadge>{index === 0 ? 'Next' : 'Fresh'}</HotBadge> : null}
+                  {isFeatured ? <HotBadge className="pack-inventory-hot-badge">Hot</HotBadge> : null}
+                  {isFresh ? <HotBadge className="pack-inventory-fresh-badge">Fresh</HotBadge> : null}
                 </div>
                 <div className="pack-inventory-card-main">
                   <div className="pack-inventory-card-title">
                     <div>
-                      <h3>{pack.theme.name}</h3>
+                      <h3>{pack.packName ?? pack.theme.name}</h3>
                       <span>{pack.id}</span>
                     </div>
                     <StatusBadge status={pack.status}>
                       {pack.status === 'pending' ? 'Pending' : 'Opened'}
                     </StatusBadge>
                   </div>
-                  <p>{pack.theme.oddsTeaser}</p>
+                  <p>{pack.oddsTeaser ?? pack.theme.oddsTeaser}</p>
                   <div className="pack-inventory-card-meta">
                     <span>
                       <Clock3 size={15} />
                       {pack.purchasedAt}
                     </span>
-                    <span>{pack.theme.cardCount} cards</span>
-                    <PriceText>{pack.theme.price.toLocaleString('en-US')}</PriceText>
+                    <span>{pack.cardCount ?? pack.theme.cardCount} cards</span>
                   </div>
                 </div>
                 <div className="pack-inventory-card-actions">
@@ -583,9 +627,10 @@ export default function PackInventoryPage() {
                   </button>
                 </div>
               </article>
-            ))}
+              )
+            })}
 
-            {visibleCount < packs.length ? (
+            {packs.length === 0 ? null : visibleCount < packs.length ? (
               <div className="pack-inventory-loader" aria-live="polite">
                 Đang nạp thêm pack...
               </div>

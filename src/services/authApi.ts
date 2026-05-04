@@ -1,11 +1,12 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
 
-type AuthUser = {
+export type AuthUser = {
   id: string
   email: string
   username: string
   role: 'USER' | 'ADMIN'
   balance: number
+  createdAt?: string
 }
 
 export type AuthSession = {
@@ -18,63 +19,13 @@ type AuthErrorBody = {
   errors?: Array<string | { message?: string }>
 }
 
-type LoginResponse = {
-  access_token: string
-  tokenType?: string
-  expiresIn?: string
-}
-
-type RegisterResponse = AuthUser
-
-function decodeJwtPayload(token: string): Record<string, unknown> | null {
-  const parts = token.split('.')
-  if (parts.length < 2) return null
-
-  try {
-    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
-    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
-    const json = window.atob(padded)
-    return JSON.parse(json) as Record<string, unknown>
-  } catch {
-    return null
-  }
-}
-
-function asAuthSession(login: LoginResponse, fallbackUser?: RegisterResponse): AuthSession {
-  const payload = decodeJwtPayload(login.access_token)
-  const user: AuthUser = {
-    id:
-      (typeof payload?.sub === 'string' ? payload.sub : undefined) ??
-      fallbackUser?.id ??
-      '',
-    email:
-      (typeof payload?.email === 'string' ? payload.email : undefined) ??
-      fallbackUser?.email ??
-      '',
-    username:
-      (typeof payload?.username === 'string' ? payload.username : undefined) ??
-      fallbackUser?.username ??
-      'user',
-    role:
-      payload?.role === 'ADMIN' || payload?.role === 'USER'
-        ? payload.role
-        : (fallbackUser?.role ?? 'USER'),
-    balance: fallbackUser?.balance ?? 0,
-  }
-
-  return {
-    access_token: login.access_token,
-    user,
-  }
-}
-
 async function parseAuthError(response: Response) {
   let body: AuthErrorBody | undefined
 
   try {
     body = await response.json()
   } catch {
-    return 'Không thể xử lý phản hồi từ máy chủ.'
+    return 'Khong the xu ly phan hoi tu may chu.'
   }
 
   if (Array.isArray(body?.message)) {
@@ -92,22 +43,23 @@ async function parseAuthError(response: Response) {
       .join(' ')
   }
 
-  return `Yêu cầu thất bại (${response.status}).`
+  return `Yeu cau that bai (${response.status}).`
 }
 
-async function postAuth<T>(path: '/auth/login' | '/auth/register', body: Record<string, string>) {
+export async function apiRequest<T>(path: string, options: RequestInit = {}, token?: string) {
   let response: Response
 
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
-      method: 'POST',
+      ...options,
       headers: {
-        'Content-Type': 'application/json',
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
       },
-      body: JSON.stringify(body),
     })
   } catch {
-    throw new Error('Không kết nối được API. Kiểm tra server tại http://localhost:3000 hoặc VITE_API_BASE_URL.')
+    throw new Error('Khong ket noi duoc API. Kiem tra server tai http://localhost:3000 hoac VITE_API_BASE_URL.')
   }
 
   if (!response.ok) {
@@ -117,18 +69,19 @@ async function postAuth<T>(path: '/auth/login' | '/auth/register', body: Record<
   return response.json() as Promise<T>
 }
 
+async function postAuth(path: '/auth/login' | '/auth/register', body: Record<string, string>) {
+  return apiRequest<AuthSession>(path, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
 export async function loginWithPassword(payload: { email: string; password: string }) {
-  const login = await postAuth<LoginResponse>('/auth/login', payload)
-  return asAuthSession(login)
+  return postAuth('/auth/login', payload)
 }
 
 export async function registerWithPassword(payload: { email: string; password: string; username: string }) {
-  const createdUser = await postAuth<RegisterResponse>('/auth/register', payload)
-  const login = await postAuth<LoginResponse>('/auth/login', {
-    email: payload.email,
-    password: payload.password,
-  })
-  return asAuthSession(login, createdUser)
+  return postAuth('/auth/register', payload)
 }
 
 export function persistAuthSession(session: AuthSession, remember: boolean) {
@@ -138,4 +91,28 @@ export function persistAuthSession(session: AuthSession, remember: boolean) {
 
   fallbackStorage.removeItem('packopener.auth')
   storage.setItem('packopener.auth', JSON.stringify({ ...session, expiresAt }))
+}
+
+export function readPersistedAuthSession(): AuthSession | null {
+  const raw = window.localStorage.getItem('packopener.auth') ?? window.sessionStorage.getItem('packopener.auth')
+
+  if (!raw) return null
+
+  try {
+    const session = JSON.parse(raw) as AuthSession & { expiresAt?: number | null }
+
+    if (session.expiresAt && session.expiresAt < Date.now()) {
+      window.localStorage.removeItem('packopener.auth')
+      window.sessionStorage.removeItem('packopener.auth')
+      return null
+    }
+
+    return session
+  } catch {
+    return null
+  }
+}
+
+export async function fetchCurrentUser(token: string) {
+  return apiRequest<AuthUser>('/me', {}, token)
 }

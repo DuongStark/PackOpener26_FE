@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties, UIEvent } from 'react'
 import {
   ArrowLeft,
@@ -13,6 +13,8 @@ import {
   X,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
+import { readPersistedAuthSession } from '../services/authApi'
+import { buyPack, fetchMarketPacks, type ApiMarketPack } from '../services/marketApi'
 import {
   Avatar,
   HotBadge,
@@ -22,6 +24,7 @@ import {
   PackPurchaseChoice,
   PriceText,
 } from '../components'
+import type { PackTheme } from '../components/molecules/packThemes'
 import './styles/market-page.css'
 
 type StoredAuthSession = {
@@ -32,17 +35,12 @@ type StoredAuthSession = {
 }
 
 type PurchaseMode = 'open-now' | 'send-inventory'
+type MarketPack = PackTheme & {
+  apiId?: string
+}
 
 function readAuthSession(): StoredAuthSession | null {
-  const raw = window.localStorage.getItem('packopener.auth') ?? window.sessionStorage.getItem('packopener.auth')
-
-  if (!raw) return null
-
-  try {
-    return JSON.parse(raw) as StoredAuthSession
-  } catch {
-    return null
-  }
+  return readPersistedAuthSession()
 }
 
 function formatCoin(value: number) {
@@ -57,21 +55,68 @@ function marketBadge(index: number) {
   return 'Store'
 }
 
+function normalize(value?: string) {
+  return value?.toLowerCase().replace(/[^a-z0-9]/g, '') ?? ''
+}
+
+function themeForApiPack(pack: ApiMarketPack, index: number): PackTheme {
+  return (
+    PACK_THEMES.find((theme) => normalize(theme.name) === normalize(pack.name)) ??
+    PACK_THEMES.find((theme) => normalize(pack.name).includes(normalize(theme.name)) || normalize(theme.name).includes(normalize(pack.name))) ??
+    PACK_THEMES[index % PACK_THEMES.length]
+  )
+}
+
+function mapApiPack(pack: ApiMarketPack, index: number): MarketPack {
+  const theme = themeForApiPack(pack, index)
+
+  return {
+    ...theme,
+    apiId: pack.id,
+    name: pack.name,
+    price: pack.price,
+    subtitle: pack.subtitle ?? theme.subtitle,
+    cardCount: pack.cardCount ?? theme.cardCount,
+    tierCode: pack.tierCode ?? theme.tierCode,
+    oddsTeaser: pack.oddsTeaser ?? pack.description ?? theme.oddsTeaser,
+  }
+}
+
 export default function MarketPage() {
   const [visibleCount, setVisibleCount] = useState(12)
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [purchaseMode, setPurchaseMode] = useState<PurchaseMode>('send-inventory')
   const [isLeaving, setIsLeaving] = useState(false)
   const [receipt, setReceipt] = useState('')
+  const [receiptError, setReceiptError] = useState(false)
+  const [serverPacks, setServerPacks] = useState<MarketPack[]>([])
+  const [serverBalance, setServerBalance] = useState<number | null>(null)
+  const [isBuying, setIsBuying] = useState(false)
   const session = readAuthSession()
   const username = session?.user?.username ?? 'HLV'
-  const balance = session?.user?.balance ?? 300
+  const balance = serverBalance ?? session?.user?.balance ?? 300
   const initials = username.slice(0, 2).toUpperCase()
-  const packs = useMemo(() => PACK_THEMES, [])
+  const packs = useMemo<MarketPack[]>(() => (
+    serverPacks.length ? serverPacks : PACK_THEMES
+  ), [serverPacks])
   const visiblePacks = packs.slice(0, visibleCount)
   const featuredPack = packs[packs.length - 1]
   const selectedPack = selectedKey ? (packs.find((pack) => pack.key === selectedKey) ?? featuredPack) : featuredPack
   const canBuy = selectedPack.price <= balance
+
+  useEffect(() => {
+    let cancelled = false
+
+    fetchMarketPacks().then((data) => {
+      if (!cancelled && data.length) {
+        setServerPacks(data.map(mapApiPack))
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleCatalogScroll = (event: UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget
@@ -82,14 +127,29 @@ export default function MarketPage() {
     }
   }
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     if (!canBuy) {
       setReceipt(`Không đủ coin để mua ${selectedPack.name}.`)
+      setReceiptError(true)
       return
     }
 
-    const action = purchaseMode === 'open-now' ? 'sẵn sàng mở ngay' : 'đã gửi vào kho pack'
-    setReceipt(`${selectedPack.name} ${action}. Số dư mới sẽ được cập nhật khi nối API mua pack.`)
+    setIsBuying(true)
+    setReceipt('')
+    setReceiptError(false)
+
+    try {
+      const result = await buyPack(selectedPack.apiId ?? selectedPack.key)
+      setServerBalance(result.newBalance)
+      const action = purchaseMode === 'open-now' ? 'sẵn sàng mở trong kho' : 'đã gửi vào kho pack'
+      setReceipt(`${result.packName} ${action}. Số dư mới: ${result.newBalance.toLocaleString('vi-VN')} coin.`)
+      setReceiptError(false)
+    } catch (error) {
+      setReceipt(error instanceof Error ? error.message : 'Mua pack thất bại.')
+      setReceiptError(true)
+    } finally {
+      setIsBuying(false)
+    }
   }
 
   const handleBack = () => {
@@ -187,12 +247,13 @@ export default function MarketPage() {
               return (
                 <article
                   className={`market-pack-card${selected ? ' market-pack-card-selected' : ''}`}
-                  key={pack.key}
+                  key={`${pack.apiId ?? pack.key}-${index}`}
                 >
                   <button type="button" onClick={() => setSelectedKey(pack.key)} aria-label={`Chọn ${pack.name}`}>
                     <PackArtwork theme={pack} compact />
                     <span className="market-pack-card-badge">
                       <HotBadge>{marketBadge(index)}</HotBadge>
+                      <PriceText>{pack.price.toLocaleString('en-US')}</PriceText>
                     </span>
                     <span className="market-pack-card-copy">
                       <span className="market-pack-card-title">
@@ -204,7 +265,6 @@ export default function MarketPage() {
                     <span className="market-pack-card-meta">
                       <span>{pack.cardCount} cards</span>
                       <span>{pack.tierCode}</span>
-                      <PriceText>{pack.price.toLocaleString('en-US')}</PriceText>
                     </span>
                   </button>
                 </article>
@@ -271,13 +331,13 @@ export default function MarketPage() {
 
               <PackPurchaseChoice value={purchaseMode} onChange={setPurchaseMode} />
 
-              <button className="market-buy-button" type="button" onClick={handleBuy}>
+              <button className="market-buy-button" type="button" onClick={handleBuy} disabled={isBuying}>
                 <PackagePlus size={18} />
-                {canBuy ? 'Mua pack' : 'Thiếu coin'}
+                {isBuying ? 'Đang mua...' : canBuy ? 'Mua pack' : 'Thiếu coin'}
               </button>
 
               {receipt ? (
-                <div className={`market-receipt${canBuy ? '' : ' market-receipt-error'}`} aria-live="polite">
+                <div className={`market-receipt${receiptError ? ' market-receipt-error' : ''}`} aria-live="polite">
                   <ReceiptText size={18} />
                   <span>{receipt}</span>
                 </div>

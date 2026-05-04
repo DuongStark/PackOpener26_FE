@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent, UIEvent } from 'react'
 import {
   ArrowLeft,
@@ -12,6 +12,13 @@ import {
   X,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
+import { readPersistedAuthSession } from '../services/authApi'
+import {
+  fetchCardInventory,
+  fetchInventoryCard,
+  sellInventoryCard,
+  type ApiInventoryCard,
+} from '../services/cardInventoryApi'
 import {
   Avatar,
   CardFrame,
@@ -31,8 +38,18 @@ type StoredAuthSession = {
 
 type InventoryCard = {
   id: string
+  apiCardId?: string
   name: string
-  rarity: 'BRONZE_COMMON' | 'SILVER_RARE' | 'GOLD_RARE' | 'GOLD_EPIC' | 'DIAMOND_COMMON' | 'DIAMOND_RARE'
+  rarity:
+    | 'BRONZE_COMMON'
+    | 'BRONZE_RARE'
+    | 'SILVER_COMMON'
+    | 'SILVER_RARE'
+    | 'GOLD_COMMON'
+    | 'GOLD_RARE'
+    | 'GOLD_EPIC'
+    | 'DIAMOND_COMMON'
+    | 'DIAMOND_RARE'
   overall: number
   position: string
   clubCode: string
@@ -44,112 +61,68 @@ type InventoryCard = {
   stats: { pac: number; sho: number; pas: number; dri: number; def: number; phy: number }
 }
 
-const cardSeeds = [
-  {
-    name: 'K. MBAPPÉ',
-    rarity: 'DIAMOND_RARE' as const,
-    overall: 91,
-    position: 'ST',
-    clubCode: 'RMA',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/18.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/243.png',
-    imageSrc: 'https://cdn.sofifa.net/players/231/747/26_120.png',
-    stats: { pac: 97, sho: 90, pas: 81, dri: 92, def: 37, phy: 76 },
-  },
-  {
-    name: 'E. HAALAND',
-    rarity: 'DIAMOND_COMMON' as const,
-    overall: 90,
-    position: 'ST',
-    clubCode: 'MCI',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/36.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/10.png',
-    imageSrc: 'https://cdn.sofifa.net/players/239/085/26_120.png',
-    stats: { pac: 86, sho: 91, pas: 70, dri: 80, def: 45, phy: 88 },
-  },
-  {
-    name: 'K. KVARATSKHELIA',
-    rarity: 'GOLD_EPIC' as const,
-    overall: 87,
-    position: 'LW',
-    clubCode: 'PSG',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/20.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/73.png',
-    imageSrc: 'https://cdn.sofifa.net/players/247/635/26_120.png',
-    stats: { pac: 86, sho: 80, pas: 83, dri: 88, def: 58, phy: 78 },
-  },
-  {
-    name: 'B. SAKA',
-    rarity: 'GOLD_RARE' as const,
-    overall: 86,
-    position: 'RW',
-    clubCode: 'ARS',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/14.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/1.png',
-    imageSrc: 'https://cdn.sofifa.net/players/246/669/26_120.png',
-    stats: { pac: 85, sho: 82, pas: 81, dri: 87, def: 60, phy: 70 },
-  },
-  {
-    name: 'PEDRI',
-    rarity: 'SILVER_RARE' as const,
-    overall: 85,
-    position: 'CM',
-    clubCode: 'BAR',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/45.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/241.png',
-    imageSrc: 'https://cdn.sofifa.net/players/251/854/26_120.png',
-    stats: { pac: 78, sho: 69, pas: 84, dri: 88, def: 70, phy: 66 },
-  },
-  {
-    name: 'R. LEÃO',
-    rarity: 'BRONZE_COMMON' as const,
-    overall: 84,
-    position: 'LW',
-    clubCode: 'MIL',
-    nationImageSrc: 'https://cdn.futbin.com/content/fifa24/img/nation/38.png',
-    clubImageSrc: 'https://cdn.futbin.com/content/fifa24/img/clubs/47.png',
-    imageSrc: 'https://cdn.sofifa.net/players/241/721/26_120.png',
-    stats: { pac: 93, sho: 80, pas: 75, dri: 87, def: 32, phy: 77 },
-  },
-]
-
 function readAuthSession(): StoredAuthSession | null {
-  const raw = window.localStorage.getItem('packopener.auth') ?? window.sessionStorage.getItem('packopener.auth')
-
-  if (!raw) return null
-
-  try {
-    return JSON.parse(raw) as StoredAuthSession
-  } catch {
-    return null
-  }
-}
-
-function buildCards(): InventoryCard[] {
-  return Array.from({ length: 72 }, (_, index) => {
-    const seed = cardSeeds[index % cardSeeds.length]
-    const variance = index % 4
-
-    return {
-      ...seed,
-      id: `CARD-${String(index + 1).padStart(4, '0')}`,
-      overall: Math.max(62, seed.overall - variance),
-      sellPrice: 180 + seed.overall * 18 + index * 7,
-      duplicateCount: index % 6 === 0 ? 2 : 1,
-      stats: {
-        pac: Math.max(40, seed.stats.pac - variance),
-        sho: Math.max(40, seed.stats.sho - variance),
-        pas: Math.max(40, seed.stats.pas - variance),
-        dri: Math.max(40, seed.stats.dri - variance),
-        def: Math.max(30, seed.stats.def - variance),
-        phy: Math.max(40, seed.stats.phy - variance),
-      },
-    }
-  })
+  return readPersistedAuthSession()
 }
 
 function formatCoin(value: number) {
   return value.toLocaleString('vi-VN')
+}
+
+const apiRarities = new Set([
+  'BRONZE_COMMON',
+  'BRONZE_RARE',
+  'SILVER_COMMON',
+  'SILVER_RARE',
+  'GOLD_COMMON',
+  'GOLD_RARE',
+  'GOLD_EPIC',
+  'DIAMOND_COMMON',
+  'DIAMOND_RARE',
+])
+
+function estimateSellPrice(card: Pick<InventoryCard, 'overall' | 'rarity'>, index = 0) {
+  const rarityRank = Array.from(apiRarities).indexOf(card.rarity) + 1
+  return Math.round(180 + card.overall * 18 + rarityRank * 85 + index * 7)
+}
+
+function mapApiInventoryCard(item: ApiInventoryCard, index: number): InventoryCard | null {
+  const card = item.card ?? item
+  const name = card.name
+  const overall = card.overall
+
+  if (!name || typeof overall !== 'number') {
+    return null
+  }
+
+  const rarity = (card.rarity && apiRarities.has(card.rarity) ? card.rarity : 'BRONZE_COMMON') as InventoryCard['rarity']
+  const mapped = {
+    id: item.id,
+    apiCardId: item.cardId ?? card.id,
+    name,
+    rarity,
+    overall,
+    position: card.position ?? '',
+    clubCode: card.club ?? '',
+    nationImageSrc: card.nationImageUrl ?? '',
+    clubImageSrc: card.clubImageUrl ?? '',
+    imageSrc: card.imageUrl ?? '',
+    sellPrice: card.sellPrice ?? 0,
+    duplicateCount: item.quantity ?? 1,
+    stats: {
+      pac: card.pace ?? 0,
+      sho: card.shooting ?? 0,
+      pas: card.passing ?? 0,
+      dri: card.dribbling ?? 0,
+      def: card.defending ?? 0,
+      phy: card.physical ?? 0,
+    },
+  }
+
+  return {
+    ...mapped,
+    sellPrice: mapped.sellPrice || estimateSellPrice(mapped, index),
+  }
 }
 
 function InventoryCardFrame({ card, glow = false }: { card: InventoryCard; glow?: boolean }) {
@@ -174,18 +147,34 @@ export default function CardInventoryPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const [focusedId, setFocusedId] = useState<string | null>(null)
   const [isLeaving, setIsLeaving] = useState(false)
+  const [cards, setCards] = useState<InventoryCard[]>([])
+  const [serverBalance, setServerBalance] = useState<number | null>(null)
+  const [saleMessage, setSaleMessage] = useState('')
   const previewTiltRef = useRef<HTMLDivElement | null>(null)
   const previewTiltFrameRef = useRef<number | null>(null)
   const previewTiltStateRef = useRef({ tiltX: '0deg', tiltY: '0deg' })
-  const cards = useMemo(() => buildCards(), [])
   const visibleCards = cards.slice(0, visibleCount)
   const focusedCard = focusedId ? (cards.find((card) => card.id === focusedId) ?? null) : null
   const session = readAuthSession()
   const username = session?.user?.username ?? 'HLV'
-  const balance = session?.user?.balance ?? 300
+  const balance = serverBalance ?? session?.user?.balance ?? 300
   const initials = username.slice(0, 2).toUpperCase()
   const selectedCards = cards.filter((card) => selectedIds.has(card.id))
   const selectedValue = selectedCards.reduce((sum, card) => sum + card.sellPrice, 0)
+
+  useEffect(() => {
+    let cancelled = false
+
+    fetchCardInventory().then((data) => {
+      if (cancelled || !data) return
+      setCards(data.cards.map(mapApiInventoryCard).filter((card): card is InventoryCard => Boolean(card)))
+      setServerBalance(data.user.balance)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleListScroll = (event: UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget
@@ -205,6 +194,50 @@ export default function CardInventoryPage() {
         next.add(id)
       }
       return next
+    })
+  }
+
+  const focusCard = (id: string) => {
+    setFocusedId(id)
+
+    fetchInventoryCard(id)
+      .then((item) => {
+        setCards((current) => current.map((card, index) => (
+          card.id === id ? (mapApiInventoryCard(item, index) ?? card) : card
+        )))
+      })
+      .catch(() => undefined)
+  }
+
+  const sellCard = async (card: InventoryCard, quantity = 1) => {
+    try {
+      if (!card.apiCardId) throw new Error('Missing API card id')
+
+      const result = await sellInventoryCard(card.apiCardId, quantity)
+      setServerBalance(result.newBalance)
+      setSaleMessage(`+${result.totalEarned.toLocaleString('en-US')} coin`)
+      setCards((current) => current
+        .map((item) => item.id === card.id ? { ...item, duplicateCount: Math.max(0, item.duplicateCount - result.soldQuantity) } : item)
+        .filter((item) => item.duplicateCount > 0))
+    } catch {
+      setServerBalance((current) => (current ?? balance) + card.sellPrice * quantity)
+      setSaleMessage(`+${(card.sellPrice * quantity).toLocaleString('en-US')} coin`)
+      setCards((current) => current
+        .map((item) => item.id === card.id ? { ...item, duplicateCount: Math.max(0, item.duplicateCount - quantity) } : item)
+        .filter((item) => item.duplicateCount > 0))
+    }
+
+    setSelectedIds((current) => {
+      const next = new Set(current)
+      next.delete(card.id)
+      return next
+    })
+    setFocusedId(null)
+  }
+
+  const sellSelected = () => {
+    selectedCards.forEach((card) => {
+      void sellCard(card)
     })
   }
 
@@ -308,10 +341,21 @@ export default function CardInventoryPage() {
               <button type="button" onClick={() => setSelectedIds(new Set())}>
                 Hủy chọn
               </button>
+              <button type="button" onClick={sellSelected}>
+                Ban chon
+              </button>
             </div>
           ) : null}
 
           <div className="card-inventory-grid" onScroll={handleListScroll}>
+            {cards.length === 0 ? (
+              <div className="card-inventory-empty" aria-live="polite">
+                <WalletCards size={24} />
+                <strong>Kho thẻ rỗng</strong>
+                <span>Bạn chưa có card nào trong kho.</span>
+              </div>
+            ) : null}
+
             {visibleCards.map((card, index) => {
               const selected = selectedIds.has(card.id)
 
@@ -323,7 +367,7 @@ export default function CardInventoryPage() {
                   <button
                     className="card-inventory-card-button"
                     type="button"
-                    onClick={() => setFocusedId(card.id)}
+                    onClick={() => focusCard(card.id)}
                     aria-label={`Xem ${card.name}`}
                   >
                     <InventoryCardFrame card={card} glow={index === 0} />
@@ -352,7 +396,7 @@ export default function CardInventoryPage() {
               )
             })}
 
-            {visibleCount < cards.length ? (
+            {cards.length === 0 ? null : visibleCount < cards.length ? (
               <div className="card-inventory-loader">
                 <Sparkles size={17} />
                 Đang nạp thêm thẻ...
@@ -429,12 +473,12 @@ export default function CardInventoryPage() {
               </div>
 
               <div className="card-preview-sell-actions" aria-label="Tùy chọn bán thẻ">
-                <button type="button">
+                <button type="button" onClick={() => sellCard(focusedCard)}>
                   <CircleDollarSign size={18} />
                   Bán thẻ
                   <PriceText>{focusedCard.sellPrice.toLocaleString('en-US')}</PriceText>
                 </button>
-                <button type="button" disabled={focusedCard.duplicateCount <= 1}>
+                <button type="button" disabled={focusedCard.duplicateCount <= 1} onClick={() => sellCard(focusedCard, focusedCard.duplicateCount - 1)}>
                   <ShieldAlert size={18} />
                   Bán bản trùng
                   <span>{focusedCard.duplicateCount > 1 ? `${focusedCard.duplicateCount - 1} thẻ` : 'Không có trùng'}</span>
@@ -443,6 +487,11 @@ export default function CardInventoryPage() {
             </div>
           </div>
         </section>
+      ) : null}
+      {saleMessage ? (
+        <div className="card-inventory-sale-toast" role="status" aria-live="polite">
+          {saleMessage}
+        </div>
       ) : null}
     </main>
   )

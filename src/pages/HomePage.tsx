@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import {
   CircleDollarSign,
   Gem,
+  House,
   Package,
+  PanelsTopLeft,
   ShoppingBag,
   Sparkles,
   Trophy,
@@ -10,6 +13,8 @@ import {
   WalletCards,
 } from 'lucide-react'
 import heroImage from '../assets/hero.png'
+import { readPersistedAuthSession } from '../services/authApi'
+import { fetchHomeData, type HomeApiData } from '../services/homeApi'
 import {
   Avatar,
   CardFrame,
@@ -31,17 +36,7 @@ type StoredAuthSession = {
 }
 
 function readAuthSession(): StoredAuthSession | null {
-  const raw = window.localStorage.getItem('packopener.auth') ?? window.sessionStorage.getItem('packopener.auth')
-
-  if (!raw) {
-    return null
-  }
-
-  try {
-    return JSON.parse(raw) as StoredAuthSession
-  } catch {
-    return null
-  }
+  return readPersistedAuthSession()
 }
 
 const featuredPacks = [
@@ -101,12 +96,84 @@ function formatCoin(value: number) {
   return value.toLocaleString('vi-VN')
 }
 
+function enrichApiCard(apiData: HomeApiData | null, index: number) {
+  const apiCard = apiData?.topCards[index]?.card
+  const fallback = topPulls[index]
+
+  if (!apiCard) return fallback
+
+  return {
+    ...fallback,
+    name: apiCard.name,
+    rarity: apiCard.rarity as typeof fallback.rarity,
+    overall: apiCard.overall,
+    position: apiCard.position,
+    imageSrc: apiCard.imageUrl ?? fallback.imageSrc,
+    nationImageSrc: apiCard.nationImageUrl ?? fallback.nationImageSrc,
+    clubImageSrc: apiCard.clubImageUrl ?? fallback.clubImageSrc,
+    clubCode: apiCard.club ?? fallback.clubCode,
+    stats: {
+      pac: apiCard.pace ?? fallback.stats.pac,
+      sho: apiCard.shooting ?? fallback.stats.sho,
+      pas: apiCard.passing ?? fallback.stats.pas,
+      dri: apiCard.dribbling ?? fallback.stats.dri,
+      def: apiCard.defending ?? fallback.stats.def,
+      phy: apiCard.physical ?? fallback.stats.phy,
+    },
+  }
+}
+
 export default function HomePage() {
+  const [homeData, setHomeData] = useState<HomeApiData | null>(null)
   const session = readAuthSession()
-  const username = session?.user?.username ?? 'HLV'
-  const balance = session?.user?.balance ?? 300
+  const username = homeData?.user.username ?? session?.user?.username ?? 'HLV'
+  const balance = homeData?.user.balance ?? session?.user?.balance ?? 300
   const initials = username.slice(0, 2).toUpperCase()
   const heroPack = featuredPacks[0]
+  const pendingPackCount = homeData?.pendingPacks.length ?? pendingPacks.length
+  const rareCount = homeData?.inventorySummary?.byRarity
+    ? Object.entries(homeData.inventorySummary.byRarity).reduce((sum, [rarity, count]) => (
+        rarity.includes('DIAMOND') || rarity.includes('GOLD_EPIC') ? sum + count : sum
+      ), 0)
+    : 18
+  const bestOverall = homeData?.topCards[0]?.card?.overall ?? 91
+  const recentActivity = homeData?.transactions.length
+    ? homeData.transactions.map((transaction) => [
+        transaction.type.replace(/_/g, ' '),
+        transaction.description,
+        `${transaction.amount > 0 ? '+' : ''}${transaction.amount.toLocaleString('en-US')} coin`,
+      ] as const)
+    : activity
+  const homeFeaturedPacks = featuredPacks.map((pack, index) => {
+    const apiPack = homeData?.packs[index]
+    return {
+      theme: pack,
+      name: apiPack?.name ?? pack.name,
+      price: apiPack?.price ?? pack.price,
+      oddsTeaser: apiPack?.description ?? pack.oddsTeaser,
+    }
+  })
+  const homePendingPacks = pendingPacks.map((pack, index) => {
+    const apiPack = homeData?.pendingPacks[index]?.pack
+    return {
+      theme: pack,
+      name: apiPack?.name ?? pack.name,
+      cardCount: pack.cardCount,
+    }
+  })
+  const homeTopPulls = topPulls.map((_, index) => enrichApiCard(homeData, index))
+
+  useEffect(() => {
+    let cancelled = false
+
+    fetchHomeData().then((data) => {
+      if (!cancelled) setHomeData(data)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <main
@@ -121,10 +188,22 @@ export default function HomePage() {
           <span>PackOpener2026</span>
         </a>
         <nav className="home-nav" aria-label="Điều hướng chính">
-          <a className="home-nav-link home-nav-link-active" href="/home">Home</a>
-          <a className="home-nav-link" href="/packs">Packs</a>
-          <a className="home-nav-link" href="/cards">Cards</a>
-          <a className="home-nav-link" href="/market">Market</a>
+          <a className="home-nav-link home-nav-link-active" href="/home" aria-label="Home">
+            <House size={17} />
+            <span>Home</span>
+          </a>
+          <a className="home-nav-link" href="/packs" aria-label="Packs">
+            <Package size={17} />
+            <span>Packs</span>
+          </a>
+          <a className="home-nav-link" href="/cards" aria-label="Cards">
+            <PanelsTopLeft size={17} />
+            <span>Cards</span>
+          </a>
+          <a className="home-nav-link" href="/market" aria-label="Market">
+            <ShoppingBag size={17} />
+            <span>Market</span>
+          </a>
         </nav>
         <div className="home-account">
           <div className="home-coin-pill" aria-label={`${formatCoin(balance)} coin`}>
@@ -178,25 +257,25 @@ export default function HomePage() {
           <div className="home-stat-grid">
             <div>
               <Sparkles size={18} />
-              <strong>2</strong>
+              <strong>{pendingPackCount}</strong>
               <span>Pack chờ mở</span>
             </div>
             <div>
               <Gem size={18} />
-              <strong>18</strong>
+              <strong>{rareCount}</strong>
               <span>Thẻ hiếm</span>
             </div>
             <div>
               <Trophy size={18} />
-              <strong>91</strong>
+              <strong>{bestOverall}</strong>
               <span>Best OVR</span>
             </div>
           </div>
 
           <div className="home-activity">
             <LabelText>Hoạt động gần đây</LabelText>
-            {activity.map(([type, name, delta]) => (
-              <div className="home-activity-row" key={`${type}-${name}`}>
+            {recentActivity.map(([type, name, delta], index) => (
+              <div className="home-activity-row" key={`${type}-${name}-${delta}-${index}`}>
                 <span>{type}</span>
                 <strong>{name}</strong>
                 <em>{delta}</em>
@@ -214,9 +293,9 @@ export default function HomePage() {
             <a className="home-inline-link" href="/market">Xem tất cả</a>
           </div>
           <div className="home-pack-row">
-            {featuredPacks.map((pack, index) => (
-              <article className="home-pack-card" key={pack.key}>
-                <PackArtwork theme={pack} compact />
+            {homeFeaturedPacks.map((pack, index) => (
+              <article className="home-pack-card" key={`${pack.theme.key}-${pack.name}-${index}`}>
+                <PackArtwork theme={pack.theme} compact />
                 <div className="home-pack-card-copy">
                   <div>
                     <h3>{pack.name}</h3>
@@ -240,9 +319,9 @@ export default function HomePage() {
             </div>
           </div>
           <div className="home-pending-list">
-            {pendingPacks.map((pack) => (
-              <article className="home-pending-item" key={pack.key}>
-                <PackArtwork theme={pack} compact />
+            {homePendingPacks.map((pack, index) => (
+              <article className="home-pending-item" key={`${pack.theme.key}-${pack.name}-${index}`}>
+                <PackArtwork theme={pack.theme} compact />
                 <div>
                   <h3>{pack.name}</h3>
                   <p>{pack.cardCount} cards inside</p>
@@ -262,8 +341,8 @@ export default function HomePage() {
             <a className="home-inline-link" href="/cards">Kho thẻ</a>
           </div>
           <div className="home-card-row">
-            {topPulls.map((card, index) => (
-              <article className="home-player-card" key={card.name}>
+            {homeTopPulls.map((card, index) => (
+              <article className="home-player-card" key={`${card.name}-${card.overall}-${index}`}>
                 <div className="home-player-card-rank">#{index + 1}</div>
                 <CardFrame {...card} />
                 <RarityChip rarity={card.rarity}>{card.rarity.replace(/_/g, ' ')}</RarityChip>

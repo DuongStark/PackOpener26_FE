@@ -23,6 +23,10 @@ type AuthSubmitResult = {
 async function submitLogin(payload: { email: string; password: string; remember: boolean }): Promise<AuthSubmitResult> {
   const session = await loginWithPassword({ email: payload.email, password: payload.password })
   persistAuthSession(session, payload.remember)
+  window.setTimeout(() => {
+    window.history.pushState({}, '', '/home')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }, 450)
 
   return {
     ok: true,
@@ -33,6 +37,10 @@ async function submitLogin(payload: { email: string; password: string; remember:
 async function submitRegister(payload: { email: string; username: string; password: string }): Promise<AuthSubmitResult> {
   const session = await registerWithPassword(payload)
   persistAuthSession(session, true)
+  window.setTimeout(() => {
+    window.history.pushState({}, '', '/home')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }, 450)
 
   return {
     ok: true,

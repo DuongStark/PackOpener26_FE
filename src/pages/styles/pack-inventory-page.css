@@ -392,6 +392,44 @@
   transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
+.pack-inventory-card-featured {
+  grid-column: span 2;
+  grid-template-columns: minmax(190px, 0.46fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 406px;
+  border-color: rgba(56, 189, 248, 0.46);
+  background:
+    radial-gradient(circle at 30% 18%, rgba(56, 189, 248, 0.22), transparent 32%),
+    radial-gradient(circle at 82% 62%, rgba(245, 200, 66, 0.18), transparent 34%),
+    rgba(8, 15, 35, 0.52);
+  box-shadow: 0 0 42px rgba(56, 189, 248, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pack-inventory-card-featured .pack-inventory-card-art {
+  grid-row: 1 / 3;
+  min-height: 100%;
+}
+
+.pack-inventory-card-featured .card-pack-artwork {
+  width: min(100%, 126px);
+  animation: packInventoryFeaturedFloat 4.6s ease-in-out infinite;
+}
+
+.pack-inventory-card-featured h3 {
+  font-size: 1.18rem;
+}
+
+.pack-inventory-card-featured::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0 38%, rgba(255, 255, 255, 0.2) 48%, transparent 58% 100%);
+  transform: translateX(-120%);
+  animation: packInventoryFeaturedSweep 5.8s ease-in-out infinite;
+}
+
 .pack-inventory-card:hover {
   border-color: rgba(96, 165, 250, 0.38);
   background: rgba(22, 52, 90, 0.34);
@@ -440,6 +478,17 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.pack-inventory-hot-badge {
+  background: linear-gradient(135deg, #f97316, #facc15);
+  color: #101827;
+  box-shadow: 0 0 22px rgba(249, 115, 22, 0.42);
+}
+
+.pack-inventory-fresh-badge {
+  background: linear-gradient(135deg, #22c55e, #38bdf8);
+  animation: packInventoryFreshPulse 1.55s ease-in-out infinite;
 }
 
 .pack-inventory-card-main {
@@ -543,6 +592,30 @@
   color: var(--text-muted);
   font-family: var(--font-body);
   font-size: 0.82rem;
+}
+
+.pack-inventory-empty {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 220px;
+  border: 1px dashed rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  background: rgba(8, 15, 35, 0.46);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.pack-inventory-empty strong {
+  color: var(--text-strong);
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.pack-inventory-empty span {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
 }
 
 .pack-opening-overlay {
@@ -685,6 +758,23 @@
   font-family: var(--font-number);
   font-size: 1.1rem;
   line-height: 1;
+}
+
+.pack-opening-coin .economy-coin-display {
+  gap: 8px;
+}
+
+.pack-opening-coin .visual-coin-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.pack-opening-sale-toast {
+  position: fixed;
+  top: 86px;
+  right: 18px;
+  z-index: 95;
+  pointer-events: none;
 }
 
 .pack-opening-hud-actions button,
@@ -917,6 +1007,42 @@
   opacity: 0;
   transform: translateY(22px) rotateY(90deg);
   animation: packOpeningCardReveal 620ms ease-out var(--reveal-delay) both;
+}
+
+.pack-opening-result-card-new {
+  position: relative;
+  overflow: hidden;
+}
+
+.pack-opening-result-card-new::after {
+  content: 'FRESH PULL';
+  position: absolute;
+  top: 12px;
+  right: -38px;
+  z-index: 5;
+  width: 132px;
+  min-height: 22px;
+  display: grid;
+  place-items: center;
+  transform: rotate(35deg);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.92), rgba(56, 189, 248, 0.92));
+  color: #03111f;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.pack-opening-result-card-new::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 0 32%, rgba(255, 255, 255, 0.32) 48%, transparent 64% 100%);
+  mix-blend-mode: screen;
+  transform: translateX(-120%);
+  animation: packOpeningNewPullShimmer 1.9s ease-in-out infinite;
 }
 
 .pack-opening-result-card-best {
@@ -1627,5 +1753,45 @@
 
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes packInventoryFeaturedFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.22));
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(1deg);
+    filter: drop-shadow(0 0 24px rgba(245, 200, 66, 0.28));
+  }
+}
+
+@keyframes packInventoryFeaturedSweep {
+  46%, 100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes packInventoryFreshPulse {
+  0%, 100% {
+    opacity: 0.78;
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.22);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 0 7px rgba(56, 189, 248, 0);
+  }
+}
+
+@keyframes packOpeningNewPullShimmer {
+  0% {
+    transform: translateX(-130%);
+  }
+
+  62%, 100% {
+    transform: translateX(130%);
   }
 }

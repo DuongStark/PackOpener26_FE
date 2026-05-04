@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
-import AtomsPage from './pages/AtomsPage'
 import CardInventoryPage from './pages/CardInventoryPage'
 import HomePage from './pages/HomePage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import MarketPage from './pages/MarketPage'
-import MoleculesPage from './pages/MoleculesPage'
-import OrganismsPage from './pages/OrganismsPage'
 import PackInventoryPage from './pages/PackInventoryPage'
 import RegisterPage from './pages/RegisterPage'
-import TemplatesPage from './pages/TemplatesPage'
 
 function installClientSideNavigation() {
   const handler = (event: MouseEvent) => {
@@ -58,14 +54,6 @@ function App() {
     }
   }, [])
 
-  if (path === '/atoms') {
-    return <AtomsPage />
-  }
-
-  if (path === '/molecules') {
-    return <MoleculesPage />
-  }
-
   if (path === '/login') {
     return <LoginPage />
   }
@@ -88,14 +76,6 @@ function App() {
 
   if (path === '/market') {
     return <MarketPage />
-  }
-
-  if (path === '/organisms') {
-    return <OrganismsPage />
-  }
-
-  if (path === '/templates') {
-    return <TemplatesPage />
   }
 
   return <LandingPage />
